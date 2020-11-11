@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.chakra-checkbox__label,
+.chakra-radio__label {
+    margin-bottom: 1px !important;
+}
