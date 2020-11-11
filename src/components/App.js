@@ -6,6 +6,7 @@ import {
 } from '@chakra-ui/core';
 import PollCreate from './PollCreate';
 import PollRespond from './PollRespond';
+import PollResults from './PollResults';
 
 export default function App() {
     const poll = {
@@ -17,13 +18,29 @@ export default function App() {
         ]
     };
 
+    const results = {
+        question: 'What is the question?',
+        totalVotes: 12,
+        answers: [
+            {
+                text: 'There is a question',
+                votes: 5
+            },
+            {
+                text: 'There is not a question',
+                votes: 7
+            }
+        ]
+    };
+
     return (
         <Center height="100vh">
             <Container pt={4} pb={45}>
                 <Heading as="h1">Poll App</Heading>
                 <Heading size="sm" fontWeight="semibold" as="h2" mt={2} mb={10} >Instantly create online polls with open-ended responses</Heading>
                 {/* <PollCreate /> */}
-                <PollRespond poll={poll} />
+                {/* <PollRespond poll={poll} /> */}
+                <PollResults results={results} />
             </Container>
         </Center>
     );
