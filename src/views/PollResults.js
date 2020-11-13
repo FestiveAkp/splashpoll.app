@@ -9,8 +9,21 @@ import {
     Progress
 } from '@chakra-ui/core';
 
-export default function PollResults(props) {
-    const results = props.results;
+export default function PollResults() {
+    const results = {
+        question: 'What is the question?',
+        totalVotes: 12,
+        answers: [
+            {
+                text: 'There is a question',
+                votes: 5
+            },
+            {
+                text: 'There is not a question',
+                votes: 7
+            }
+        ]
+    };
 
     // Calculates the percentage the given vote accounts for, rounded to two decimal places
     const toPercentage = votes => Math.round((votes / results.totalVotes) * 10000) / 100;

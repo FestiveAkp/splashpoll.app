@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import {
+    useHistory,
+    useParams
+} from 'react-router-dom';
+import {
     Box,
     Stack,
     Heading,
@@ -10,10 +14,22 @@ import {
     Button
 } from '@chakra-ui/core';
 
-export default function PollRespond(props) {
-    const poll = props.poll;
+export default function PollRespond() {
+    // Router state
+    const { id } = useParams();
+    const history = useHistory();
+
+    // Poll state
     const [choice, setChoice] = useState('');
     const [choices, setChoices] = useState([]);
+    const poll = {
+        question: 'What is the question?',
+        multipleChoices: true,
+        answers: [
+            'There is a question',
+            "There is not a question"
+        ]
+    };
 
     // Submit poll response to API
     const submit = () => {
@@ -29,12 +45,17 @@ export default function PollRespond(props) {
         }
 
         console.log(data);
+        goToResults();
     }
+
+    // Navigate to results page
+    const goToResults = () => history.push(`/${id}/r`);
 
     return (
         <Box className="poll-respond">
             <Box as="header">
                 <Heading size="md">{poll.question}</Heading>
+                <p>ID: {id}</p>
             </Box>
             <Box as="section" mt={10}>
                 {(poll.multipleChoices === true) ? (
@@ -58,7 +79,7 @@ export default function PollRespond(props) {
             </Box>
             <Box as="footer" mt={12}>
                 <Button onClick={submit} colorScheme="twitter">Vote</Button>
-                <Button ml={2}>Results</Button>
+                <Button onClick={goToResults} ml={2}>Results</Button>
             </Box>
         </Box>
     );

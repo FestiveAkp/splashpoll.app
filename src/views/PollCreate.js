@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import {
+    useHistory
+} from 'react-router-dom';
+import {
     Box,
     Stack,
     Input,
@@ -8,6 +11,9 @@ import {
 } from '@chakra-ui/core';
 
 export default function PollCreate() {
+    // Router state
+    const history = useHistory();
+
     // Form fields
     const [question, setQuestion] = useState('');
     const [answers, setAnswers] = useState(['', '', '']);
@@ -29,6 +35,9 @@ export default function PollCreate() {
         data.answers.forEach((answer, i) => console.log(`Answer ${i}: ${answer}`));
         console.log(`Open ended: ${data.openEnded}`);
         console.log('---');
+
+        // Hardcoded ID for the time being
+        history.push('/245');
     }
 
     // Append a new answer field
