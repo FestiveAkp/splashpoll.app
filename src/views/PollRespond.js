@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     useHistory,
     useParams
@@ -20,29 +20,42 @@ export default function PollRespond() {
     const history = useHistory();
 
     // Poll state
+    const [poll, setPoll] = useState({});
+    const [fetched, setFetched] = useState(false);
     const [choice, setChoice] = useState('');
     const [choices, setChoices] = useState([]);
-    const poll = {
-        question: 'What is the question?',
-        multipleChoices: true,
-        answers: [
-            'There is a question',
-            "There is not a question"
-        ]
-    };
+
+    // On mount, fetch the poll
+    useEffect(() => {
+        fetch('https://splashpoll-api.herokuapp.com/api/polls/' + id)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                setPoll(data);
+                setFetched(true);
+            });
+    }, [id]);
+
 
     // Submit poll response to API
     const submit = () => {
         const data = {
-            choices: []
+            choices: choices
         };
 
         // Choices are currently indices, convert it to answer text
         if (poll.multipleChoices) {
-            data.choices = choices.map(i => poll.answers[i]);
+            data.choices = choices.map(i => poll.choices[i].text);
         } else {
-            data.choices = [poll.answers[choice]];
+            data.choices = [poll.choices[choice].text];
         }
+
+        fetch('https://splashpoll-api.herokuapp.com/api/polls/' + id, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+            .then(() => history.push('/' + id + '/r'))
 
         console.log(data);
         goToResults();
@@ -51,7 +64,9 @@ export default function PollRespond() {
     // Navigate to results page
     const goToResults = () => history.push(`/${id}/r`);
 
-    return (
+    return (!fetched) ? (
+        <Heading size="md">Loading...</Heading>
+    ) : (
         <Box className="poll-respond">
             <Box as="header">
                 <Heading size="md">{poll.question}</Heading>
@@ -61,16 +76,16 @@ export default function PollRespond() {
                 {(poll.multipleChoices === true) ? (
                         <CheckboxGroup onChange={setChoices} value={choices}>
                             <Stack spacing={3}>
-                                {poll.answers.map((answer, i) => (
-                                    <Checkbox key={i} value={`${i}`} spacing="1rem" size="lg">{answer}</Checkbox>
+                                {poll.choices.map((choice, i) => (
+                                    <Checkbox key={i} value={`${i}`} spacing="1rem" size="lg">{choice.text}</Checkbox>
                                 ))}
                             </Stack>
                         </CheckboxGroup>
                     ) : (
                         <RadioGroup onChange={setChoice} value={choice}>
                             <Stack spacing={3}>
-                                {poll.answers.map((answer, i) => (
-                                    <Radio key={i} value={`${i}`} spacing="1rem" size="lg">{answer}</Radio>
+                                {poll.choices.map((choice, i) => (
+                                    <Radio key={i} value={`${i}`} spacing="1rem" size="lg">{choice.text}</Radio>
                                 ))}
                             </Stack>
                         </RadioGroup>

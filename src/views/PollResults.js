@@ -1,4 +1,5 @@
-import React, {  } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import {
     Box,
     Flex,
@@ -10,31 +11,36 @@ import {
 } from '@chakra-ui/core';
 
 export default function PollResults() {
-    const results = {
-        question: 'What is the question?',
-        totalVotes: 12,
-        answers: [
-            {
-                text: 'There is a question',
-                votes: 5
-            },
-            {
-                text: 'There is not a question',
-                votes: 7
-            }
-        ]
-    };
+    const { id } = useParams();
+    const [results, setResults] = useState({});
+    const [loading, setLoading] = useState(true);
+
+    // On mount, fetch the poll
+    useEffect(() => {
+        setLoading(true);
+        let eventSource = new EventSource(`https://splashpoll-api.herokuapp.com/api/polls/${id}/stream`);
+        eventSource.addEventListener('message', m => {
+            const data = JSON.parse(m.data);
+            console.log(data);
+            setResults(data);
+            setLoading(false);
+        });
+
+        return () => eventSource.close();
+    }, [id]);
 
     // Calculates the percentage the given vote accounts for, rounded to two decimal places
-    const toPercentage = votes => Math.round((votes / results.totalVotes) * 10000) / 100;
+    const toPercentage = votes => Math.round((votes / results.totalVotes) * 10000) / 100 || 0;
 
-    return (
+    return (loading) ? (
+        <Heading size="md">Loading...</Heading>
+    ) : (
         <Box>
             <Box as="header">
                 <Heading size="md">{results.question}</Heading>
             </Box>
             <Stack as="section" spacing={6} mt={10} divider={<StackDivider />}>
-                {results.answers.map((answer, i) => (
+                {results.choices.sort((a, b) => b.votes - a.votes).map((answer, i) => (
                     <Box key={i}>
                         <Flex justify="space-between" align="flex-end">
                             <Text width="60%" fontSize="lg">{answer.text}</Text>
