@@ -36,8 +36,13 @@ export default function PollCreate() {
         console.log(`Open ended: ${data.openEnded}`);
         console.log('---');
 
-        // Hardcoded ID for the time being
-        history.push('/245');
+        fetch('https://splashpoll-api.herokuapp.com/api/polls', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => history.push('/' + data.id));
     }
 
     // Append a new answer field
