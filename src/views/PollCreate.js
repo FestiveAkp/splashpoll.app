@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import {
-    useHistory
-} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import { useMutation } from 'react-query';
+import { queryCache } from '../index';
 import {
     Box,
     Stack,
@@ -9,6 +9,16 @@ import {
     Checkbox,
     Button
 } from '@chakra-ui/core';
+
+const createPoll = async poll => {
+    const response = await fetch('https://splashpoll-api.herokuapp.com/api/polls', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(poll)
+    });
+    const data = await response.json();
+    return data;
+}
 
 export default function PollCreate() {
     // Router state
@@ -19,30 +29,24 @@ export default function PollCreate() {
     const [answers, setAnswers] = useState(['', '', '']);
     const [openEnded, setOpenEnded] = useState(false);
     const [multipleChoices, setMultipleChoices] = useState(false);
+    const [mutate] = useMutation(createPoll);
 
     // Submit newly created poll to API
-    const submit = () => {
-        // Collect data
-        const data = {
+    const submit = async () => {
+        const newPoll = {
             question,
             answers: answers.filter(answer => answer !== ''),     // Filter out empty answers
             openEnded,
             multipleChoices
         };
 
-        console.log(data);
-        console.log(`Question: ${data.question}`);
-        data.answers.forEach((answer, i) => console.log(`Answer ${i}: ${answer}`));
-        console.log(`Open ended: ${data.openEnded}`);
-        console.log('---');
-
-        fetch('https://splashpoll-api.herokuapp.com/api/polls', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        })
-            .then(response => response.json())
-            .then(data => history.push('/' + data.id));
+        try {
+            const data = await mutate(newPoll);
+            queryCache.setQueryData(['poll', data.id], data);
+            history.push('/' + data.id);
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     // Append a new answer field

@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { queryCache } from '../index';
 import {
     Box,
     Flex,
     Stack,
     StackDivider,
+    Center,
     Heading,
     Text,
-    Progress
+    Progress,
+    Spinner
 } from '@chakra-ui/core';
 
 export default function PollResults() {
@@ -18,10 +21,18 @@ export default function PollResults() {
     // On mount, fetch the poll
     useEffect(() => {
         setLoading(true);
+
+        // Try getting from the cache
+        const cachedPoll = queryCache.getQueryData(['poll', id]);
+
+        if (cachedPoll !== undefined) {
+            setResults(cachedPoll);
+            setLoading(false);
+        }
+
         let eventSource = new EventSource(`https://splashpoll-api.herokuapp.com/api/polls/${id}/stream`);
         eventSource.addEventListener('message', m => {
             const data = JSON.parse(m.data);
-            console.log(data);
             setResults(data);
             setLoading(false);
         });
@@ -32,9 +43,9 @@ export default function PollResults() {
     // Calculates the percentage the given vote accounts for, rounded to two decimal places
     const toPercentage = votes => Math.round((votes / results.totalVotes) * 10000) / 100 || 0;
 
-    return (loading) ? (
-        <Heading size="md">Loading...</Heading>
-    ) : (
+    if (loading) return <Center><Spinner /></Center>;
+
+    return (
         <Box>
             <Box as="header">
                 <Heading size="md">{results.question}</Heading>

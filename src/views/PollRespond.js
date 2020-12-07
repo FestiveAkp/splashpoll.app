@@ -1,18 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import {
-    useHistory,
-    useParams
-} from 'react-router-dom';
+import React, { useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
+import { useQuery, useMutation } from 'react-query';
+import { queryCache } from '../index';
 import {
     Box,
     Stack,
+    Center,
     Heading,
     Checkbox,
     CheckboxGroup,
     Radio,
     RadioGroup,
-    Button
+    Button,
+    Spinner
 } from '@chakra-ui/core';
+
+const updatePoll = async ({data, id}) => {
+    await fetch('https://splashpoll-api.herokuapp.com/api/polls/' + id, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    });
+}
+
+const getPoll = async (_, id) => {
+    const response = await fetch('https://splashpoll-api.herokuapp.com/api/polls/' + id);
+    const data = await response.json();
+    return data;
+}
 
 export default function PollRespond() {
     // Router state
@@ -20,28 +35,20 @@ export default function PollRespond() {
     const history = useHistory();
 
     // Poll state
-    const [poll, setPoll] = useState({});
-    const [fetched, setFetched] = useState(false);
     const [choice, setChoice] = useState('');
     const [choices, setChoices] = useState([]);
 
-    // On mount, fetch the poll
-    useEffect(() => {
-        fetch('https://splashpoll-api.herokuapp.com/api/polls/' + id)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                setPoll(data);
-                setFetched(true);
-            });
-    }, [id]);
+    // Fetch poll and cache it
+    const { status, data: poll, error } = useQuery(['poll', id], getPoll);
+    const [mutate] = useMutation(updatePoll, {
+        onSettled: () => queryCache.invalidateQueries('polls')
+    });
 
+    const goToResults = () => history.push(`/${id}/r`);
 
     // Submit poll response to API
-    const submit = () => {
-        const data = {
-            choices: choices
-        };
+    const submit = async () => {
+        const data = { choices };
 
         // Choices are currently indices, convert it to answer text
         if (poll.multipleChoices) {
@@ -50,23 +57,18 @@ export default function PollRespond() {
             data.choices = [poll.choices[choice].text];
         }
 
-        fetch('https://splashpoll-api.herokuapp.com/api/polls/' + id, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        })
-            .then(() => history.push('/' + id + '/r'))
-
-        console.log(data);
-        goToResults();
+        try {
+            await mutate({ data, id });
+            goToResults();
+        } catch (e) {
+            console.log(e);
+        }
     }
 
-    // Navigate to results page
-    const goToResults = () => history.push(`/${id}/r`);
+    if (status === 'loading') return <Center><Spinner /></Center>;
+    if (status === 'error') console.log(error);
 
-    return (!fetched) ? (
-        <Heading size="md">Loading...</Heading>
-    ) : (
+    return (
         <Box className="poll-respond">
             <Box as="header">
                 <Heading size="md">{poll.question}</Heading>

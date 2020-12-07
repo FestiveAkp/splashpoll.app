@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-    Switch,
-    Route
-} from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import PollCreate from './views/PollCreate';
 import PollRespond from './views/PollRespond';
 import PollResults from './views/PollResults';
