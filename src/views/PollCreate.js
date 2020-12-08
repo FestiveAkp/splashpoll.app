@@ -5,9 +5,12 @@ import { queryCache } from '../index';
 import {
     Box,
     Stack,
+    Flex,
     Input,
     Checkbox,
-    Button
+    Button,
+    Switch,
+    Text
 } from '@chakra-ui/react';
 
 const createPoll = async poll => {
@@ -28,6 +31,7 @@ export default function PollCreate() {
     const [question, setQuestion] = useState('');
     const [answers, setAnswers] = useState(['', '', '']);
     const [openEnded, setOpenEnded] = useState(false);
+    const [multipleChoice, setMultipleChoice] = useState(true);
     const [multipleChoices, setMultipleChoices] = useState(false);
     const [mutate] = useMutation(createPoll);
 
@@ -35,12 +39,13 @@ export default function PollCreate() {
     const submit = async () => {
         const newPoll = {
             question,
-            answers: answers.filter(answer => answer !== ''),     // Filter out empty answers
+            answers: multipleChoice ? answers.filter(answer => answer !== '') : [],     // Filter out empty answers
             openEnded,
             multipleChoices
         };
 
         try {
+            console.log(newPoll);
             const data = await mutate(newPoll);
             queryCache.setQueryData(['poll', data.id], data);
             history.push('/' + data.id);
@@ -74,26 +79,40 @@ export default function PollCreate() {
                     placeholder="What's your question?"
                 />
             </Box>
-            <Stack as="section" spacing={3} mt={8}>
-                {answers.map((answer, i) => (
-                    <Input
-                        key={i}
-                        value={answer}
-                        onChange={e => updateAnswerField(i, e.target.value)}
-                        variant="flushed"
-                        placeholder="Enter answer"
-                    />
-                ))}
-            </Stack>
+            <Flex as="section" align="center" mt={8}>
+                <Switch
+                    id="open-ended"
+                    value={openEnded}
+                    onChange={() => setOpenEnded(b => !b)}
+                    mr={3}
+                />
+                <Text fontWeight="semibold" as="label" htmlFor="open-ended">Enable open-ended responses</Text>
+            </Flex>
+            <Flex as="section" align="center" mt={5}>
+                <Switch
+                    id="multiple-choice"
+                    isChecked={multipleChoice}
+                    onChange={() => setMultipleChoice(b => !b)}
+                    mr={3}
+                />
+                <Text fontWeight="semibold" as="label" htmlFor="multiple-choice">Enable multiple choice answers</Text>
+            </Flex>
+            {multipleChoice ? 'true' : 'false'}
+            {multipleChoice &&
+                <Stack as="section" spacing={3} mt={5}>
+                    {answers.map((answer, i) => (
+                        <Input
+                            key={i}
+                            value={answer}
+                            onChange={e => updateAnswerField(i, e.target.value)}
+                            variant="flushed"
+                            placeholder="Enter answer"
+                        />
+                    ))}
+                </Stack>
+            }
             <Box as="section" mt={6}>
                 <Stack direction="column">
-                    <Checkbox
-                        value={openEnded}
-                        onChange={() => setOpenEnded(b => !b)}
-                        size="sm"
-                    >
-                        Enable open-ended response
-                    </Checkbox>
                     <Checkbox
                         value={multipleChoices}
                         onChange={() => setMultipleChoices(b => !b)}
