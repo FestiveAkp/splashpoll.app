@@ -1,12 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { QueryCache, ReactQueryCacheProvider } from 'react-query';
+import { ReactQueryCacheProvider } from 'react-query';
 import { BrowserRouter } from 'react-router-dom';
 import { ChakraProvider } from '@chakra-ui/react';
 import './index.css';
 import App from './App';
-
-export const queryCache = new QueryCache();
+import { queryCache } from './api';
 
 ReactDOM.render(
     <ChakraProvider>

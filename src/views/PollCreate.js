@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useMutation } from 'react-query';
-import { queryCache } from '../index';
 import {
     Box,
     Stack,
@@ -12,16 +11,7 @@ import {
     Switch,
     Text
 } from '@chakra-ui/react';
-
-const createPoll = async poll => {
-    const response = await fetch('https://splashpoll-api.herokuapp.com/api/polls', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(poll)
-    });
-    const data = await response.json();
-    return data;
-}
+import { queryCache, createPoll } from '../api';
 
 export default function PollCreate() {
     // Router state

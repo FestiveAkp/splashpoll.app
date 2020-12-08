@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { queryCache } from '../index';
+import { queryCache } from '../api';
 import {
     Box,
     Flex,
@@ -24,12 +24,12 @@ export default function PollResults() {
 
         // Try getting from the cache
         const cachedPoll = queryCache.getQueryData(['poll', id]);
-
         if (cachedPoll !== undefined) {
             setResults(cachedPoll);
             setLoading(false);
         }
 
+        // Start streaming poll results from server
         let eventSource = new EventSource(`https://splashpoll-api.herokuapp.com/api/polls/${id}/stream`);
         eventSource.addEventListener('message', m => {
             const data = JSON.parse(m.data);
@@ -37,6 +37,7 @@ export default function PollResults() {
             setLoading(false);
         });
 
+        // End stream when user leaves
         return () => eventSource.close();
     }, [id]);
 
