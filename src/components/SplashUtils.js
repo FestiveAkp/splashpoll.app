@@ -3,7 +3,7 @@ import {
     Center,
     Container,
     Heading
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 
 export const SplashHeader = () => (
     <>

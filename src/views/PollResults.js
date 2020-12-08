@@ -11,7 +11,7 @@ import {
     Text,
     Progress,
     Spinner
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 
 export default function PollResults() {
     const { id } = useParams();

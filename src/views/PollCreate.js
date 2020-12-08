@@ -8,7 +8,7 @@ import {
     Input,
     Checkbox,
     Button
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 
 const createPoll = async poll => {
     const response = await fetch('https://splashpoll-api.herokuapp.com/api/polls', {

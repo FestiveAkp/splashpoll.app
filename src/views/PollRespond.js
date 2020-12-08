@@ -13,7 +13,7 @@ import {
     RadioGroup,
     Button,
     Spinner
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 
 const updatePoll = async ({data, id}) => {
     await fetch('https://splashpoll-api.herokuapp.com/api/polls/' + id, {
