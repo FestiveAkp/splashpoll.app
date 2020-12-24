@@ -34,10 +34,8 @@ export default function PollRespond() {
         const data = { choices, openEndedResponses };
 
         try {
-            // await mutate({ data, id });
-            // goToResults();
-            console.log(poll);
-            console.log(data);
+            await mutate({ data, id });
+            goToResults();
         } catch (e) {
             console.log(e);
         }
