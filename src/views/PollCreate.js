@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useMutation } from 'react-query';
 import { motion, useCycle } from 'framer-motion';
+import { FaQuestionCircle } from 'react-icons/fa';
 import {
     Box,
     Stack,
@@ -10,7 +11,8 @@ import {
     Checkbox,
     Button,
     Switch,
-    Text
+    Text,
+    Tooltip
 } from '@chakra-ui/react';
 import { queryCache, createPoll } from '../api';
 
@@ -22,7 +24,6 @@ export default function PollCreate() {
     const [question, setQuestion] = useState('');
     const [answers, setAnswers] = useState(['', '', '']);
     const [openEnded, setOpenEnded] = useState(false);
-    const [multipleChoice, setMultipleChoice] = useState(true);
     const [multipleChoices, setMultipleChoices] = useState(false);
     const [mutate] = useMutation(createPoll);
 
@@ -30,16 +31,16 @@ export default function PollCreate() {
     const submit = async () => {
         const newPoll = {
             question,
-            answers: multipleChoice ? answers.filter(answer => answer !== '') : [],     // Filter out empty answers
+            answers: !openEnded ? answers.filter(answer => answer !== '') : [],     // Filter out empty answers
             openEnded,
             multipleChoices
         };
 
         try {
             console.log(newPoll);
-            const data = await mutate(newPoll);
-            queryCache.setQueryData(['poll', data.id], data);
-            history.push('/' + data.id);
+            // const data = await mutate(newPoll);
+            // queryCache.setQueryData(['poll', data.id], data);
+            // history.push('/' + data.id);
         } catch (e) {
             console.log(e);
         }
@@ -61,20 +62,11 @@ export default function PollCreate() {
     }
 
     const [isOpen, toggleOpen] = useCycle(true, false);
-    // const [isOpen2, toggleOpen2] = useCycle(false, true);
-    // const variants2 = {
-    //     open: { y: 0 },
-    //     closed: { y: 0 }
-    // };
     const [isOpen3, toggleOpen3] = useCycle(true, false);
     const toggleAnimations = () => {toggleOpen();toggleOpen3();}
 
     return (
         <Box className="poll-create">
-            {/* <motion.section
-                animate={isOpen2 ? 'open' : 'closed'}
-                variants={variants2}
-            > */}
                 <Box as="header">
                     <Input
                         value={question}
@@ -83,25 +75,31 @@ export default function PollCreate() {
                         placeholder="What's your question?"
                     />
                 </Box>
-                <Flex as="section" align="center" mt={8}>
-                    <Switch
-                        id="open-ended"
-                        value={openEnded}
-                        onChange={() => setOpenEnded(b => !b)}
-                        mr={3}
-                    />
-                    <Text fontWeight="semibold" as="label" htmlFor="open-ended">Enable open-ended responses</Text>
-                </Flex>
-                <Flex as="section" align="center" mt={5}>
-                    <Switch
-                        id="multiple-choice"
-                        isChecked={multipleChoice}
-                        onChange={() => {setMultipleChoice(b => !b); toggleAnimations()}}
-                        mr={3}
-                    />
-                    <Text fontWeight="semibold" as="label" htmlFor="multiple-choice">Enable multiple choice answers</Text>
-                </Flex>
-            {/* </motion.section> */}
+                <Box as="section" mt={8}>
+                    <Tooltip hasArrow bg="gray.300" color="black" placement="right" offset={[0,16]} label="This is some help text that might be kinda long but it's very informative and succinct">
+                        <Flex align="center" width="fit-content">
+                            <Switch
+                                id="open-ended"
+                                isChecked={openEnded}
+                                onChange={() => {setOpenEnded(b => !b); toggleAnimations()}}
+                                mr={3}
+                            />
+                            <Text fontWeight="semibold" as="label" htmlFor="open-ended">Open-ended mode</Text>
+                            <Box ml={2}>
+                                <FaQuestionCircle />
+                            </Box>
+                        </Flex>
+                    </Tooltip>
+                    <Flex align="center" mt={5}>
+                        <Switch
+                            id="multiple-choice"
+                            isChecked={!openEnded}
+                            onChange={() => {setOpenEnded(b => !b); toggleAnimations()}}
+                            mr={3}
+                        />
+                        <Text fontWeight="semibold" as="label" htmlFor="multiple-choice">Standard mode</Text>
+                    </Flex>
+                </Box>
             <motion.section
                 animate={isOpen ? 'open' : 'closed'}
                 initial="open"
@@ -139,7 +137,7 @@ export default function PollCreate() {
                             onChange={() => setMultipleChoices(b => !b)}
                             size="sm"
                         >
-                            Allow multiple selections
+                            Allow multiple poll answers
                         </Checkbox>
                     </Stack>
                 </Box>
