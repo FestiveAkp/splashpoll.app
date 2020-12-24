@@ -38,9 +38,9 @@ export default function OpenEndedResponse(props) {
                         onChange={e => setResponseField(e.target.value)}
                         onKeyDown={e => addResponse(e)}
                         size="lg"
-                        placeholder="Type your answer"
+                        placeholder="Start typing your answer..."
                     />
-                    <Text fontSize="sm" color="grey" mt={2}>Press enter to add multiple responses</Text>
+                    <Text fontSize="sm" color="grey" mt={2}>Press enter to add multiple answers</Text>
                     <Wrap mt={7}>
                         {props.responses.map((response, i) => (
                             <WrapItem key={i}>
@@ -57,7 +57,7 @@ export default function OpenEndedResponse(props) {
                     value={responseField}
                     onChange={e => updateResponse(e.target.value)}
                     size="lg"
-                    placeholder="Type your answer"
+                    placeholder="Start typing your answer..."
                 />
             )}
         </Box>

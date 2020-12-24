@@ -26,7 +26,7 @@ export default function App() {
                     </Route>
                 </Switch>
             </SplashContainer>
-            <Divider />
+            <Divider borderBottomWidth="2px" borderColor="gray.300" />
             <div>
                 What this website is about
             </div>
