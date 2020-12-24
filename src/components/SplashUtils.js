@@ -14,7 +14,7 @@ export const SplashHeader = () => (
 
 export const SplashContainer = props => (
     <>
-        <Center height="100vh">
+        <Center minHeight="100vh">
             <Container pt={4} pb={45}>
                 {props.children}
             </Container>

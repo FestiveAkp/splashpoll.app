@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useMutation } from 'react-query';
+import { motion, useCycle } from 'framer-motion';
 import {
     Box,
     Stack,
@@ -59,62 +60,93 @@ export default function PollCreate() {
         }
     }
 
+    const [isOpen, toggleOpen] = useCycle(true, false);
+    // const [isOpen2, toggleOpen2] = useCycle(false, true);
+    // const variants2 = {
+    //     open: { y: 0 },
+    //     closed: { y: 0 }
+    // };
+    const [isOpen3, toggleOpen3] = useCycle(true, false);
+    const toggleAnimations = () => {toggleOpen();toggleOpen3();}
+
     return (
         <Box className="poll-create">
-            <Box as="header">
-                <Input
-                    value={question}
-                    onChange={e => setQuestion(e.target.value)}
-                    variant="flushed"
-                    placeholder="What's your question?"
-                />
-            </Box>
-            <Flex as="section" align="center" mt={8}>
-                <Switch
-                    id="open-ended"
-                    value={openEnded}
-                    onChange={() => setOpenEnded(b => !b)}
-                    mr={3}
-                />
-                <Text fontWeight="semibold" as="label" htmlFor="open-ended">Enable open-ended responses</Text>
-            </Flex>
-            <Flex as="section" align="center" mt={5}>
-                <Switch
-                    id="multiple-choice"
-                    isChecked={multipleChoice}
-                    onChange={() => setMultipleChoice(b => !b)}
-                    mr={3}
-                />
-                <Text fontWeight="semibold" as="label" htmlFor="multiple-choice">Enable multiple choice answers</Text>
-            </Flex>
-            {multipleChoice ? 'true' : 'false'}
-            {multipleChoice &&
-                <Stack as="section" spacing={3} mt={5}>
-                    {answers.map((answer, i) => (
-                        <Input
-                            key={i}
-                            value={answer}
-                            onChange={e => updateAnswerField(i, e.target.value)}
-                            variant="flushed"
-                            placeholder="Enter answer"
-                        />
-                    ))}
-                </Stack>
-            }
-            <Box as="section" mt={6}>
-                <Stack direction="column">
-                    <Checkbox
-                        value={multipleChoices}
-                        onChange={() => setMultipleChoices(b => !b)}
-                        size="sm"
-                    >
-                        Allow multiple selections
-                    </Checkbox>
-                </Stack>
-            </Box>
-            <Box as="footer" mt={10}>
-                <Button onClick={submit} colorScheme="twitter">Create Poll</Button>
-            </Box>
+            {/* <motion.section
+                animate={isOpen2 ? 'open' : 'closed'}
+                variants={variants2}
+            > */}
+                <Box as="header">
+                    <Input
+                        value={question}
+                        onChange={e => setQuestion(e.target.value)}
+                        variant="flushed"
+                        placeholder="What's your question?"
+                    />
+                </Box>
+                <Flex as="section" align="center" mt={8}>
+                    <Switch
+                        id="open-ended"
+                        value={openEnded}
+                        onChange={() => setOpenEnded(b => !b)}
+                        mr={3}
+                    />
+                    <Text fontWeight="semibold" as="label" htmlFor="open-ended">Enable open-ended responses</Text>
+                </Flex>
+                <Flex as="section" align="center" mt={5}>
+                    <Switch
+                        id="multiple-choice"
+                        isChecked={multipleChoice}
+                        onChange={() => {setMultipleChoice(b => !b); toggleAnimations()}}
+                        mr={3}
+                    />
+                    <Text fontWeight="semibold" as="label" htmlFor="multiple-choice">Enable multiple choice answers</Text>
+                </Flex>
+            {/* </motion.section> */}
+            <motion.section
+                animate={isOpen ? 'open' : 'closed'}
+                initial="open"
+                variants={{
+                    open: { opacity: 1, y: "0%", height: 'auto', pointerEvents: 'auto' },
+                    closed: { opacity: 0, y: "0%", height: 0, pointerEvents: 'none', transition: { type: 'tween' } }
+                }}
+                style={{marginTop:'2.5rem',marginBottom:'2.5rem'}}
+            >
+                {
+                    <Stack as="section" spacing={3}>
+                        {answers.map((answer, i) => (
+                            <Input
+                                key={i}
+                                value={answer}
+                                onChange={e => updateAnswerField(i, e.target.value)}
+                                variant="flushed"
+                                placeholder="Enter answer"
+                            />
+                        ))}
+                    </Stack>
+                }
+            </motion.section>
+            <motion.section
+                animate={isOpen3 ? 'open' : 'closed'}
+                variants={{
+                    open: { y: 0 },
+                    closed: { y: -40, transition: { type: 'spring', bounce: 0.35 } },
+                }}
+            >
+                <Box as="section">
+                    <Stack direction="column">
+                        <Checkbox
+                            value={multipleChoices}
+                            onChange={() => setMultipleChoices(b => !b)}
+                            size="sm"
+                        >
+                            Allow multiple selections
+                        </Checkbox>
+                    </Stack>
+                </Box>
+                <Box as="footer" mt={5}>
+                    <Button onClick={submit} colorScheme="twitter">Create Poll</Button>
+                </Box>
+            </motion.section>
         </Box>
     );
 }

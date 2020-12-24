@@ -3,17 +3,16 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useQuery, useMutation } from 'react-query';
 import {
     Box,
-    Stack,
     Center,
     Heading,
-    Checkbox,
-    CheckboxGroup,
-    Radio,
-    RadioGroup,
+    Divider,
+    Text,
     Button,
     Spinner
 } from '@chakra-ui/react';
 import { queryCache, getPoll, updatePoll } from '../api';
+import OpenEndedResponse from '../components/OpenEndedResponse';
+import MultipleChoiceResponse from '../components/MultipleChoiceResponse';
 
 export default function PollRespond() {
     // Router state
@@ -21,31 +20,24 @@ export default function PollRespond() {
     const history = useHistory();
 
     // Poll state
-    const [choice, setChoice] = useState('');
     const [choices, setChoices] = useState([]);
+    const [openEndedResponses, setOpenEndedResponses] = useState([]);
 
     // Fetch poll and cache it
     const { status, data: poll, error } = useQuery(['poll', id], getPoll);
-    const [mutate] = useMutation(updatePoll, {
-        onSettled: () => queryCache.invalidateQueries('polls')
-    });
+    const [mutate] = useMutation(updatePoll, { onSettled: () => queryCache.invalidateQueries('polls') });
 
     const goToResults = () => history.push(`/${id}/r`);
 
     // Submit poll response to API
     const submit = async () => {
-        const data = { choices };
-
-        // Choices are currently indices, convert it to answer text
-        if (poll.multipleChoices) {
-            data.choices = choices.map(i => poll.choices[i].text);
-        } else {
-            data.choices = [poll.choices[choice].text];
-        }
+        const data = { choices, openEndedResponses };
 
         try {
-            await mutate({ data, id });
-            goToResults();
+            // await mutate({ data, id });
+            // goToResults();
+            console.log(poll);
+            console.log(data);
         } catch (e) {
             console.log(e);
         }
@@ -58,29 +50,24 @@ export default function PollRespond() {
         <Box className="poll-respond">
             <Box as="header">
                 <Heading size="md">{poll.question}</Heading>
-                <p>ID: {id}</p>
+                <Text fontSize="sm">ID: {id}</Text>
             </Box>
-            <Box as="section" mt={10}>
-                {(poll.multipleChoices === true) ? (
-                        <CheckboxGroup onChange={setChoices} value={choices}>
-                            <Stack spacing={3}>
-                                {poll.choices.map((choice, i) => (
-                                    <Checkbox key={i} value={`${i}`} spacing="1rem" size="lg">{choice.text}</Checkbox>
-                                ))}
-                            </Stack>
-                        </CheckboxGroup>
-                    ) : (
-                        <RadioGroup onChange={setChoice} value={choice}>
-                            <Stack spacing={3}>
-                                {poll.choices.map((choice, i) => (
-                                    <Radio key={i} value={`${i}`} spacing="1rem" size="lg">{choice.text}</Radio>
-                                ))}
-                            </Stack>
-                        </RadioGroup>
-                    )
-                }
-            </Box>
-            <Box as="footer" mt={12}>
+            {poll.openEnded ? (
+                <OpenEndedResponse
+                    responses={openEndedResponses}
+                    update={setOpenEndedResponses}
+                    multipleChoice={poll.multipleChoices}
+                />
+            ) : (
+                <MultipleChoiceResponse
+                    options={poll.choices}
+                    choices={choices}
+                    update={setChoices}
+                    multipleChoice={poll.multipleChoices}
+                />
+            )}
+            <Box as="footer" mt={4}>
+                <Divider mb={4} />
                 <Button onClick={submit} colorScheme="twitter">Vote</Button>
                 <Button onClick={goToResults} ml={2}>Results</Button>
             </Box>
