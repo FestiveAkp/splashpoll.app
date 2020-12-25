@@ -37,10 +37,9 @@ export default function PollCreate() {
         };
 
         try {
-            console.log(newPoll);
-            // const data = await mutate(newPoll);
-            // queryCache.setQueryData(['poll', data.id], data);
-            // history.push('/' + data.id);
+            const data = await mutate(newPoll);
+            queryCache.setQueryData(['poll', data.id], data);
+            history.push('/' + data.id);
         } catch (e) {
             console.log(e);
         }
