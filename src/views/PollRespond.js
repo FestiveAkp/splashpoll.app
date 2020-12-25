@@ -3,16 +3,23 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useQuery, useMutation } from 'react-query';
 import {
     Box,
-    Center,
     Heading,
     Divider,
     Text,
     Button,
-    Spinner
+    Skeleton
 } from '@chakra-ui/react';
 import { queryCache, getPoll, updatePoll } from '../api';
 import OpenEndedResponse from '../components/OpenEndedResponse';
 import MultipleChoiceResponse from '../components/MultipleChoiceResponse';
+
+const LoadingSkeleton = () => (
+    <Box>
+        <Skeleton width="60%" height="24px" />
+        <Skeleton width="20%" height="20px" mt={3} />
+        <Skeleton mt={10} height="48px" />
+    </Box>
+);
 
 export default function PollRespond() {
     // Router state
@@ -41,7 +48,7 @@ export default function PollRespond() {
         }
     }
 
-    if (status === 'loading') return <Center><Spinner /></Center>;
+    if (status === 'loading') return <LoadingSkeleton />;
     if (status === 'error') console.log(error);
 
     return (

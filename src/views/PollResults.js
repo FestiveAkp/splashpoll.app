@@ -6,12 +6,37 @@ import {
     Flex,
     Stack,
     StackDivider,
-    Center,
     Heading,
     Text,
     Progress,
-    Spinner
+    Skeleton
 } from '@chakra-ui/react';
+
+const NoChoicesResult = () => (
+    <Box>
+        <Flex justify="space-between" align="flex-end">
+            <Text width="60%" fontSize="lg">No votes</Text>
+            <Text fontStyle="italic" fontSize="sm">0 votes (0%)</Text>
+        </Flex>
+        <Box mt={2}>
+            <Progress value={0} size="lg" colorScheme="twitter" />
+        </Box>
+    </Box>
+);
+
+const LoadingSkeleton = () => (
+    <Box>
+        <Skeleton width="50%" height="24px" />
+        <Box mt={10}>
+            <Skeleton width="80px" height="24px" />
+            <Skeleton height="20px" mt={2} />
+        </Box>
+        <Box mt={10}>
+            <Skeleton height="24px" width="80px" />
+            <Skeleton height="20px" mt={2} />
+        </Box>
+    </Box>
+);
 
 export default function PollResults() {
     const { id } = useParams();
@@ -44,7 +69,7 @@ export default function PollResults() {
     // Calculates the percentage the given vote accounts for, rounded to two decimal places
     const toPercentage = votes => Math.round((votes / results.totalVotes) * 10000) / 100 || 0;
 
-    if (loading) return <Center><Spinner /></Center>;
+    if (loading) return <LoadingSkeleton />;
 
     return (
         <Box>
@@ -64,6 +89,7 @@ export default function PollResults() {
                     </Box>
                 ))}
             </Stack>
+            {!results.choices.length && <NoChoicesResult />}
         </Box>
     );
 }
