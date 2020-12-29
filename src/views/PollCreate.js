@@ -16,6 +16,19 @@ import {
 } from '@chakra-ui/react';
 import { queryCache, createPoll } from '../api';
 
+const HelpTooltip = () => (
+    <Tooltip
+        hasArrow
+        bg="gray.300"
+        color="black"
+        placement="right"
+        offset={[0,16]}
+        label="This is some help text that might be kinda long but it's very informative and succinct"
+    >
+        <Box ml={2}><FaQuestionCircle /></Box>
+    </Tooltip>
+);
+
 export default function PollCreate() {
     // Router state
     const history = useHistory();
@@ -75,20 +88,16 @@ export default function PollCreate() {
                     />
                 </Box>
                 <Box as="section" mt={8}>
-                    <Tooltip hasArrow bg="gray.300" color="black" placement="right" offset={[0,16]} label="This is some help text that might be kinda long but it's very informative and succinct">
-                        <Flex align="center" width="fit-content">
-                            <Switch
-                                id="open-ended"
-                                isChecked={openEnded}
-                                onChange={() => {setOpenEnded(b => !b); toggleAnimations()}}
-                                mr={3}
-                            />
-                            <Text fontWeight="semibold" as="label" htmlFor="open-ended">Open-ended mode</Text>
-                            <Box ml={2}>
-                                <FaQuestionCircle />
-                            </Box>
-                        </Flex>
-                    </Tooltip>
+                    <Flex align="center" width="fit-content">
+                        <Switch
+                            id="open-ended"
+                            isChecked={openEnded}
+                            onChange={() => {setOpenEnded(b => !b); toggleAnimations()}}
+                            mr={3}
+                        />
+                        <Text fontWeight="semibold" as="label" htmlFor="open-ended">Open response mode</Text>
+                        <HelpTooltip />
+                    </Flex>
                     <Flex align="center" mt={5}>
                         <Switch
                             id="multiple-choice"
@@ -96,7 +105,7 @@ export default function PollCreate() {
                             onChange={() => {setOpenEnded(b => !b); toggleAnimations()}}
                             mr={3}
                         />
-                        <Text fontWeight="semibold" as="label" htmlFor="multiple-choice">Standard mode</Text>
+                        <Text fontWeight="semibold" as="label" htmlFor="multiple-choice">Fixed choice mode</Text>
                     </Flex>
                 </Box>
             <motion.section
