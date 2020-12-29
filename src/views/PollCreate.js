@@ -12,7 +12,8 @@ import {
     Button,
     Switch,
     Text,
-    Tooltip
+    Tooltip,
+    Spinner
 } from '@chakra-ui/react';
 import { queryCache, createPoll } from '../api';
 
@@ -23,15 +24,18 @@ const HelpTooltip = () => (
         color="black"
         placement="right"
         offset={[0,16]}
-        label="This is some help text that might be kinda long but it's very informative and succinct"
+        pl={3}
+        py={2}
+        label="Users enter their own answers to the question and matching responses get counted together."
     >
         <Box ml={2}><FaQuestionCircle /></Box>
     </Tooltip>
 );
 
-export default function PollCreate() {
+export default function PollCreate(props) {
     // Router state
     const history = useHistory();
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Form fields
     const [question, setQuestion] = useState('');
@@ -42,6 +46,7 @@ export default function PollCreate() {
 
     // Submit newly created poll to API
     const submit = async () => {
+        setIsSubmitting(true);
         const newPoll = {
             question,
             answers: !openEnded ? answers.filter(answer => answer !== '') : [],     // Filter out empty answers
@@ -79,35 +84,35 @@ export default function PollCreate() {
 
     return (
         <Box className="poll-create">
-                <Box as="header">
-                    <Input
-                        value={question}
-                        onChange={e => setQuestion(e.target.value)}
-                        variant="flushed"
-                        placeholder="What's your question?"
+            <Box as="header">
+                <Input
+                    value={question}
+                    onChange={e => setQuestion(e.target.value)}
+                    variant="flushed"
+                    placeholder="What's your question?"
+                />
+            </Box>
+            <Box as="section" mt={8}>
+                <Flex align="center" width="fit-content">
+                    <Switch
+                        id="open-ended"
+                        isChecked={openEnded}
+                        onChange={() => {setOpenEnded(b => !b); toggleAnimations()}}
+                        mr={3}
                     />
-                </Box>
-                <Box as="section" mt={8}>
-                    <Flex align="center" width="fit-content">
-                        <Switch
-                            id="open-ended"
-                            isChecked={openEnded}
-                            onChange={() => {setOpenEnded(b => !b); toggleAnimations()}}
-                            mr={3}
-                        />
-                        <Text fontWeight="semibold" as="label" htmlFor="open-ended">Open response mode</Text>
-                        <HelpTooltip />
-                    </Flex>
-                    <Flex align="center" mt={5}>
-                        <Switch
-                            id="multiple-choice"
-                            isChecked={!openEnded}
-                            onChange={() => {setOpenEnded(b => !b); toggleAnimations()}}
-                            mr={3}
-                        />
-                        <Text fontWeight="semibold" as="label" htmlFor="multiple-choice">Fixed choice mode</Text>
-                    </Flex>
-                </Box>
+                    <Text fontWeight="semibold" as="label" htmlFor="open-ended">Open response mode</Text>
+                    <HelpTooltip />
+                </Flex>
+                <Flex align="center" mt={5}>
+                    <Switch
+                        id="multiple-choice"
+                        isChecked={!openEnded}
+                        onChange={() => {setOpenEnded(b => !b); toggleAnimations()}}
+                        mr={3}
+                    />
+                    <Text fontWeight="semibold" as="label" htmlFor="multiple-choice">Fixed choice mode</Text>
+                </Flex>
+            </Box>
             <motion.section
                 animate={isOpen ? 'open' : 'closed'}
                 initial="open"
@@ -149,9 +154,10 @@ export default function PollCreate() {
                         </Checkbox>
                     </Stack>
                 </Box>
-                <Box as="footer" mt={5}>
+                <Flex as="footer" align="center" mt={5}>
                     <Button onClick={submit} colorScheme="twitter">Create Poll</Button>
-                </Box>
+                    {isSubmitting && <Spinner ml={6} />}
+                </Flex>
             </motion.section>
         </Box>
     );
