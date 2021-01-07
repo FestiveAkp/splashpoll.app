@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import { motion, useCycle } from 'framer-motion';
 import { FaQuestionCircle } from 'react-icons/fa';
 import { Box, Stack, Flex, Input, Checkbox, Button, Switch, Text, Tooltip, Spinner } from '@chakra-ui/react';
@@ -100,6 +101,9 @@ export default function Home() {
 
     return (
         <>
+            <Head>
+                <title>Splashpoll - Instantly create online polls with open-ended responses</title>
+            </Head>
             <Box as="section">
                 <Input
                     value={question}
