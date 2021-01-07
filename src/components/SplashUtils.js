@@ -1,17 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Wave from 'react-wavify';
-import {
-    Box,
-    Center,
-    Container,
-    Heading
-} from '@chakra-ui/react';
+import { Box, Center, Container, Heading } from '@chakra-ui/react';
 
 export const SplashHeader = () => (
-    <>
-        <Heading as="h1" fontStyle="italic" lineHeight="normal">Splashpoll.app</Heading>
-        <Heading size="sm" fontWeight="semibold" as="h2" mt={2} mb={10} >Instantly create online polls with open-ended responses</Heading>
-    </>
+    <Box as="header" mb={10}>
+        <Heading as={Link} to="/" fontStyle="italic" lineHeight="normal">Splashpoll.app</Heading>
+        <Heading as="h2" size="sm" fontWeight="semibold" mt={2}>Instantly create online polls with open-ended responses</Heading>
+    </Box>
 );
 
 export const SplashContainer = props => (
@@ -20,7 +16,7 @@ export const SplashContainer = props => (
             <Container
                 pt={4}
                 pb={5}
-                mb={4}
+                my={10}
                 backgroundColor="white"
                 borderWidth="1px"
                 borderColor="gray.200"
@@ -30,24 +26,20 @@ export const SplashContainer = props => (
                 {props.children}
             </Container>
         </Center>
-        <Box
-            position="absolute"
-            left="0"
-            right="0"
-            bottom="0"
-            zIndex="-1"
-        >
+        <Box position="absolute" left="0" right="0" bottom="0" zIndex="-1">
             <Wave
                 fill='#1DA1F2'
                 paused={false}
                 options={{
                     height: 20,
-                    amplitude: 30,
+                    amplitude: 12,
                     speed: 0.25,
-                    points: 3
+                    points: 4
                 }}
                 style={{ display: 'block' }}
+                className="react-wavify"
             />
+            {/* <Box height="200px" backgroundColor="#1DA1F2" /> */}
         </Box>
     </Box>
 );

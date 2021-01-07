@@ -1,16 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { queryCache } from '../api';
-import {
-    Box,
-    Flex,
-    Stack,
-    StackDivider,
-    Heading,
-    Text,
-    Progress,
-    Skeleton
-} from '@chakra-ui/react';
+import { Box, Flex, Stack, StackDivider, Heading, Text, Progress, Skeleton } from '@chakra-ui/react';
 
 const NoChoicesResult = () => (
     <Box>
@@ -72,8 +63,8 @@ export default function PollResults() {
     if (loading) return <LoadingSkeleton />;
 
     return (
-        <Box>
-            <Box as="header">
+        <>
+            <Box as="section">
                 <Heading size="md">{results.question}</Heading>
             </Box>
             <Stack as="section" spacing={6} mt={10} divider={<StackDivider />}>
@@ -90,6 +81,6 @@ export default function PollResults() {
                 ))}
             </Stack>
             {!results.choices.length && <NoChoicesResult />}
-        </Box>
+        </>
     );
 }

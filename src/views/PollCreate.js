@@ -3,18 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useMutation } from 'react-query';
 import { motion, useCycle } from 'framer-motion';
 import { FaQuestionCircle } from 'react-icons/fa';
-import {
-    Box,
-    Stack,
-    Flex,
-    Input,
-    Checkbox,
-    Button,
-    Switch,
-    Text,
-    Tooltip,
-    Spinner
-} from '@chakra-ui/react';
+import { Box, Stack, Flex, Input, Checkbox, Button, Switch, Text, Tooltip, Spinner } from '@chakra-ui/react';
 import { queryCache, createPoll } from '../api';
 
 const HelpTooltip = () => (
@@ -32,7 +21,7 @@ const HelpTooltip = () => (
     </Tooltip>
 );
 
-export default function PollCreate(props) {
+export default function PollCreate() {
     // Router state
     const history = useHistory();
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -107,8 +96,8 @@ export default function PollCreate(props) {
     };
 
     return (
-        <Box className="poll-create">
-            <Box as="header">
+        <>
+            <Box as="section">
                 <Input
                     value={question}
                     onChange={e => setQuestion(e.target.value)}
@@ -142,7 +131,7 @@ export default function PollCreate(props) {
                 initial="open"
                 variants={variants}
             >
-                <Stack as="section" spacing={3}>
+                <Stack spacing={3}>
                     {answers.map((answer, i) => (
                         <Input
                             key={i}
@@ -154,21 +143,21 @@ export default function PollCreate(props) {
                     ))}
                 </Stack>
             </motion.section>
-                <Box as="section">
-                    <Stack direction="column">
-                        <Checkbox
-                            value={multipleChoices}
-                            onChange={() => setMultipleChoices(b => !b)}
-                            size="sm"
-                        >
-                            Allow multiple poll answers
-                        </Checkbox>
-                    </Stack>
-                </Box>
-                <Flex as="footer" align="center" mt={5}>
-                    <Button onClick={submit} colorScheme="twitter">Create Poll</Button>
-                    {isSubmitting && <Spinner ml={6} />}
-                </Flex>
-        </Box>
+            <Box as="section">
+                <Stack direction="column">
+                    <Checkbox
+                        value={multipleChoices}
+                        onChange={() => setMultipleChoices(b => !b)}
+                        size="sm"
+                    >
+                        Allow multiple poll answers
+                    </Checkbox>
+                </Stack>
+            </Box>
+            <Flex as="footer" align="center" mt={5}>
+                <Button onClick={submit} colorScheme="twitter">Create Poll</Button>
+                {isSubmitting && <Spinner ml={6} />}
+            </Flex>
+        </>
     );
 }

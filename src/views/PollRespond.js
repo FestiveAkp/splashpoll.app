@@ -50,8 +50,8 @@ export default function PollRespond() {
     if (status === 'error') console.log(error);
 
     return (
-        <Box className="poll-respond">
-            <Box as="header">
+        <>
+            <Box as="section">
                 <Heading size="md">{poll.question}</Heading>
                 <Text fontSize="sm">ID: {id}</Text>
             </Box>
@@ -85,6 +85,6 @@ export default function PollRespond() {
                 <Button onClick={submit} colorScheme="twitter">Vote</Button>
                 <Button onClick={goToResults} ml={2}>Results</Button>
             </Box>
-        </Box>
+        </>
     );
 }
