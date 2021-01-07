@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { queryCache } from '../api';
+import { useRouter } from 'next/router';
 import { Box, Flex, Stack, StackDivider, Heading, Text, Progress, Skeleton } from '@chakra-ui/react';
 
 const NoChoicesResult = () => (
@@ -30,20 +29,14 @@ const LoadingSkeleton = () => (
 );
 
 export default function PollResults() {
-    const { id } = useParams();
+    const router = useRouter();
+    const { id } = router.query;
     const [results, setResults] = useState({});
     const [loading, setLoading] = useState(true);
 
     // On mount, fetch the poll
     useEffect(() => {
         setLoading(true);
-
-        // Try getting from the cache
-        const cachedPoll = queryCache.getQueryData(['poll', id]);
-        if (cachedPoll !== undefined) {
-            setResults(cachedPoll);
-            setLoading(false);
-        }
 
         // Start streaming poll results from server
         let eventSource = new EventSource(`https://splashpoll-api.herokuapp.com/api/polls/${id}/stream`);

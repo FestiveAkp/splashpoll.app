@@ -1,11 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import Wave from 'react-wavify';
 import { Box, Center, Container, Heading } from '@chakra-ui/react';
 
 export const SplashHeader = () => (
     <Box as="header" mb={10}>
-        <Heading as={Link} to="/" fontStyle="italic" lineHeight="normal">Splashpoll.app</Heading>
+        <Link href="/">
+            <Heading fontStyle="italic" lineHeight="normal" cursor="pointer">Splashpoll.app</Heading>
+        </Link>
         <Heading as="h2" size="sm" fontWeight="semibold" mt={2}>Instantly create online polls with open-ended responses</Heading>
     </Box>
 );
@@ -39,7 +41,7 @@ export const SplashContainer = props => (
                 style={{ display: 'block' }}
                 className="react-wavify"
             />
-            {/* <Box height="200px" backgroundColor="#1DA1F2" /> */}
+            <Box height="275px" backgroundColor="#1DA1F2" />
         </Box>
     </Box>
 );

@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-    Box,
-    Stack,
-    CheckboxGroup,
-    Checkbox,
-    RadioGroup,
-    Radio
-} from '@chakra-ui/react';
+import { Box, Stack, CheckboxGroup, Checkbox, RadioGroup, Radio } from '@chakra-ui/react';
 
 export default function MultipleChoiceResponse(props) {
     if (props.multipleChoice) {

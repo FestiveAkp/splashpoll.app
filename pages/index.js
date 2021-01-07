@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useMutation } from 'react-query';
+import { useRouter } from 'next/router';
 import { motion, useCycle } from 'framer-motion';
 import { FaQuestionCircle } from 'react-icons/fa';
 import { Box, Stack, Flex, Input, Checkbox, Button, Switch, Text, Tooltip, Spinner } from '@chakra-ui/react';
-import { queryCache, createPoll } from '../api';
 
 const HelpTooltip = () => (
     <Tooltip
@@ -21,9 +19,9 @@ const HelpTooltip = () => (
     </Tooltip>
 );
 
-export default function PollCreate() {
+export default function Home() {
     // Router state
-    const history = useHistory();
+    const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Form fields
@@ -31,11 +29,11 @@ export default function PollCreate() {
     const [answers, setAnswers] = useState(['', '', '']);
     const [openEnded, setOpenEnded] = useState(false);
     const [multipleChoices, setMultipleChoices] = useState(false);
-    const [mutate] = useMutation(createPoll);
 
     // Submit newly created poll to API
     const submit = async () => {
         setIsSubmitting(true);
+
         const newPoll = {
             question,
             answers: !openEnded ? answers.filter(answer => answer !== '') : [],     // Filter out empty answers
@@ -44,9 +42,13 @@ export default function PollCreate() {
         };
 
         try {
-            const data = await mutate(newPoll);
-            queryCache.setQueryData(['poll', data.id], data);
-            history.push('/' + data.id);
+            const response = await fetch('https://splashpoll-api.herokuapp.com/api/polls', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newPoll)
+            });
+            const data = await response.json();
+            router.push('/' + data.id);
         } catch (e) {
             console.log(e);
         }
@@ -82,7 +84,8 @@ export default function PollCreate() {
             height: 'auto',
             marginTop: '2rem',
             marginBottom: '2.5rem',
-            pointerEvents: 'auto'
+            pointerEvents: 'auto',
+            transition: { type: 'tween' }
         },
         closed: {
             opacity: 0,
