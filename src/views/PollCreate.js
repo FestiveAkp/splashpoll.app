@@ -78,9 +78,33 @@ export default function PollCreate(props) {
         }
     }
 
+    // Animation state
     const [isOpen, toggleOpen] = useCycle(true, false);
-    const [isOpen3, toggleOpen3] = useCycle(true, false);
-    const toggleAnimations = () => {toggleOpen();toggleOpen3();}
+
+    const toggleAnimations = () => {
+        setOpenEnded(b => !b);
+        toggleOpen();
+    }
+
+    const variants = {
+        open: {
+            opacity: 1,
+            y: "0%",
+            height: 'auto',
+            marginTop: '2rem',
+            marginBottom: '2.5rem',
+            pointerEvents: 'auto'
+        },
+        closed: {
+            opacity: 0,
+            y: "0%",
+            height: 0,
+            marginTop: '1rem',
+            marginBottom: '1rem',
+            pointerEvents: 'none',
+            transition: { type: 'tween' }
+        }
+    };
 
     return (
         <Box className="poll-create">
@@ -97,7 +121,7 @@ export default function PollCreate(props) {
                     <Switch
                         id="open-ended"
                         isChecked={openEnded}
-                        onChange={() => {setOpenEnded(b => !b); toggleAnimations()}}
+                        onChange={toggleAnimations}
                         mr={3}
                     />
                     <Text fontWeight="semibold" as="label" htmlFor="open-ended">Open response mode</Text>
@@ -107,7 +131,7 @@ export default function PollCreate(props) {
                     <Switch
                         id="multiple-choice"
                         isChecked={!openEnded}
-                        onChange={() => {setOpenEnded(b => !b); toggleAnimations()}}
+                        onChange={toggleAnimations}
                         mr={3}
                     />
                     <Text fontWeight="semibold" as="label" htmlFor="multiple-choice">Fixed choice mode</Text>
@@ -116,33 +140,20 @@ export default function PollCreate(props) {
             <motion.section
                 animate={isOpen ? 'open' : 'closed'}
                 initial="open"
-                variants={{
-                    open: { opacity: 1, y: "0%", height: 'auto', pointerEvents: 'auto' },
-                    closed: { opacity: 0, y: "0%", height: 0, pointerEvents: 'none', transition: { type: 'tween' } }
-                }}
-                style={{marginTop:'2.5rem',marginBottom:'2.5rem'}}
+                variants={variants}
             >
-                {
-                    <Stack as="section" spacing={3}>
-                        {answers.map((answer, i) => (
-                            <Input
-                                key={i}
-                                value={answer}
-                                onChange={e => updateAnswerField(i, e.target.value)}
-                                variant="flushed"
-                                placeholder="Enter answer"
-                            />
-                        ))}
-                    </Stack>
-                }
+                <Stack as="section" spacing={3}>
+                    {answers.map((answer, i) => (
+                        <Input
+                            key={i}
+                            value={answer}
+                            onChange={e => updateAnswerField(i, e.target.value)}
+                            variant="flushed"
+                            placeholder="Enter answer"
+                        />
+                    ))}
+                </Stack>
             </motion.section>
-            <motion.section
-                animate={isOpen3 ? 'open' : 'closed'}
-                variants={{
-                    open: { y: 0 },
-                    closed: { y: -40, transition: { type: 'spring', bounce: 0.35 } },
-                }}
-            >
                 <Box as="section">
                     <Stack direction="column">
                         <Checkbox
@@ -158,7 +169,6 @@ export default function PollCreate(props) {
                     <Button onClick={submit} colorScheme="twitter">Create Poll</Button>
                     {isSubmitting && <Spinner ml={6} />}
                 </Flex>
-            </motion.section>
         </Box>
     );
 }
