@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useQuery, useMutation } from 'react-query';
-import {
-    Box,
-    Heading,
-    Divider,
-    Text,
-    Button,
-    Skeleton
-} from '@chakra-ui/react';
+import { Box, Heading, Divider, Text, Button, Skeleton } from '@chakra-ui/react';
 import { queryCache, getPoll, updatePoll } from '../api';
-import OpenEndedResponse from '../components/OpenEndedResponse';
 import MultipleChoiceResponse from '../components/MultipleChoiceResponse';
+import OpenEndedResponseSingleChoice from '../components/OpenEndedResponseSingleChoice';
+import OpenEndedResponseMultipleChoice from '../components/OpenEndedResponseMultipleChoice';
 
 const LoadingSkeleton = () => (
     <Box>
@@ -29,6 +23,7 @@ export default function PollRespond() {
     // Poll state
     const [choices, setChoices] = useState([]);
     const [openEndedResponses, setOpenEndedResponses] = useState([]);
+    const [openEndedResponse, setOpenEndedResponse] = useState('');
 
     // Fetch poll and cache it
     const { status, data: poll, error } = useQuery(['poll', id], getPoll);
@@ -38,7 +33,10 @@ export default function PollRespond() {
 
     // Submit poll response to API
     const submit = async () => {
-        const data = { choices, openEndedResponses };
+        const data = {
+            choices,
+            openEndedResponses: poll.multipleChoices ? openEndedResponses : [openEndedResponse]
+        };
 
         try {
             await mutate({ data, id });
@@ -58,11 +56,22 @@ export default function PollRespond() {
                 <Text fontSize="sm">ID: {id}</Text>
             </Box>
             {poll.openEnded ? (
-                <OpenEndedResponse
-                    responses={openEndedResponses}
-                    update={setOpenEndedResponses}
-                    multipleChoice={poll.multipleChoices}
-                />
+                poll.multipleChoices ? (
+                    <OpenEndedResponseMultipleChoice
+                        items={poll.choices.map(choice => choice.text)}
+                        selectedItems={openEndedResponses}
+                        onSelectedItemsChange={changes => {
+                            if (changes.selectedItems) {
+                                setOpenEndedResponses(changes.selectedItems);
+                            }
+                        }}
+                    />
+                ) : (
+                    <OpenEndedResponseSingleChoice
+                        items={poll.choices.map(choice => choice.text)}
+                        onSelectedItemChange={changes => {setOpenEndedResponse(changes.selectedItem)}}
+                    />
+                )
             ) : (
                 <MultipleChoiceResponse
                     options={poll.choices}
