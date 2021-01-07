@@ -15,7 +15,8 @@
     "react-icons": "^3.11.0",
     "react-query": "^2.26.4",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.0"
+    "react-scripts": "4.0.0",
+    "react-wavify": "^1.4.0"
   },
   "scripts": {
     "start": "react-scripts start",
