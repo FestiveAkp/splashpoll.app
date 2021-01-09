@@ -14,11 +14,12 @@ export const SplashHeader = () => (
 
 export const SplashContainer = props => (
     <Box position="relative">
-        <Center className="chakra-center" minHeight="100vh" zIndex="5">
+        <Center className="chakra-center" minHeight="100vh" zIndex="5" px={4}>
             <Container
                 pt={4}
                 pb={5}
-                my={10}
+                mt={12}
+                mb={16}
                 backgroundColor="white"
                 borderWidth="1px"
                 borderColor="gray.200"
@@ -41,7 +42,7 @@ export const SplashContainer = props => (
                 style={{ display: 'block' }}
                 className="react-wavify"
             />
-            <Box height="275px" backgroundColor="#1DA1F2" />
+            <Box height={{ base: '20px', sm: '275px' }} backgroundColor="#1DA1F2" />
         </Box>
     </Box>
 );
