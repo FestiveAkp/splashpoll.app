@@ -1,22 +1,28 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { Box, Heading, Divider, Text, Button, Skeleton } from '@chakra-ui/react';
-import MultipleChoiceResponse from '../../components/MultipleChoiceResponse';
+import MultipleChoiceResponseMultipleAnswer from '../../components/MultipleChoiceResponseMultipleAnswer';
 import OpenEndedResponseSingleChoice from '../../components/OpenEndedResponseSingleChoice';
 import OpenEndedResponseMultipleChoice from '../../components/OpenEndedResponseMultipleChoice';
+import createWarningToast from '../../components/createWarningToast';
+import MultipleChoiceResponseSingleAnswer from '../../components/MultipleChoiceResponseSingleAnswer';
 
 export async function getServerSideProps(context) {
     // Fetch poll from API
     const id = context.params.id;
     try {
         const response = await fetch('https://splashpoll-api.herokuapp.com/api/polls/' + id);
+
+        if (!response.ok) {
+            throw new Error(response.status);
+        }
+
         const data = await response.json();
         return { props: data };
     } catch (e) {
         console.log(e);
-        return { props: {} };
+        return { props: { error: true, status: `${e}` } };
     }
-
 }
 
 export default function Poll(poll) {
@@ -26,14 +32,43 @@ export default function Poll(poll) {
     const goToResults = () => router.push(`/${id}/r`);
 
     // Poll state
+    const [choice, setChoice] = useState('');
     const [choices, setChoices] = useState([]);
     const [openEndedResponses, setOpenEndedResponses] = useState([]);
     const [openEndedResponse, setOpenEndedResponse] = useState('');
 
+    const getAnswers = () => poll.choices.map(choice => choice.text);
+
     // Submit poll response to API
     const submit = async () => {
+        // Validate fields
+        if (poll.openEnded) {
+            if (poll.multipleChoices) {
+                if (openEndedResponses.length < 1) {
+                    createWarningToast('Enter at least one answer.')
+                    return;
+                }
+            } else {
+                if (openEndedResponse.trim() === '') {
+                    createWarningToast('Please enter an answer.');
+                    return;
+                }
+            }
+        } else {
+            if (poll.multipleChoices) {
+                if (choices.length < 1) {
+                    createWarningToast('Select at least one item.');
+                    return;
+                }
+            } else {
+                if (choice.trim() === '') {
+                    createWarningToast('Please select an answer.');
+                }
+            }
+        }
+
         const data = {
-            choices,
+            choices: poll.multipleChoices? choices : (choice ? [choice] : []),
             openEndedResponses: poll.multipleChoices ? openEndedResponses : (openEndedResponse ? [openEndedResponse] : [])
         };
 
@@ -49,6 +84,8 @@ export default function Poll(poll) {
         }
     }
 
+    if (poll.error) return <code>ERROR {poll.status}</code>;
+
     return (
         <>
             <Box as="section">
@@ -58,7 +95,7 @@ export default function Poll(poll) {
             {poll.openEnded ? (
                 poll.multipleChoices ? (
                     <OpenEndedResponseMultipleChoice
-                        items={poll.choices.map(choice => choice.text)}
+                        items={getAnswers()}
                         selectedItems={openEndedResponses}
                         onSelectedItemsChange={changes => {
                             if (changes.selectedItems) {
@@ -68,17 +105,24 @@ export default function Poll(poll) {
                     />
                 ) : (
                     <OpenEndedResponseSingleChoice
-                        items={poll.choices.map(choice => choice.text)}
+                        items={getAnswers()}
                         onSelectedItemChange={changes => {setOpenEndedResponse(changes.selectedItem)}}
                     />
                 )
             ) : (
-                <MultipleChoiceResponse
-                    options={poll.choices}
-                    choices={choices}
-                    update={setChoices}
-                    multipleChoice={poll.multipleChoices}
-                />
+                poll.multipleChoices ? (
+                    <MultipleChoiceResponseMultipleAnswer
+                        options={getAnswers()}
+                        choices={choices}
+                        update={setChoices}
+                    />
+                ) : (
+                    <MultipleChoiceResponseSingleAnswer
+                        options={getAnswers()}
+                        choice={choice}
+                        update={setChoice}
+                    />
+                )
             )}
             <Box as="footer" mt={4}>
                 <Divider mb={4} />

@@ -10,10 +10,6 @@ export default function OpenEndedResponseMultipleChoice(props) {
     const { selectedItems, onSelectedItemsChange } = props;
     const [items, setItems] = useState(props.items);        // Gets incoming data + newly created items
     const [inputItems, setInputItems] = useState(items);    // Gets sorted and filtered by input
-    const [inputValue, setInputValue] = useState('');       // Input field
-
-    // Remove item from global items list
-    const untrackItem = item => setItems(curr => curr.filter(i => i !== item));
 
     const {
         getSelectedItemProps,
@@ -27,16 +23,17 @@ export default function OpenEndedResponseMultipleChoice(props) {
 
     const {
         isOpen,
+        openMenu,
         getToggleButtonProps,
         getMenuProps,
         getInputProps,
         getComboboxProps,
         highlightedIndex,
-        getItemProps
+        getItemProps,
+        inputValue
     } = useCombobox({
         id: 'open-ended-multi',
         selectedItem: null,
-        inputValue,
         defaultHighlightedIndex: 0,
         items: inputItems,
 
@@ -77,14 +74,16 @@ export default function OpenEndedResponseMultipleChoice(props) {
 
         onStateChange: ({ inputValue, type, selectedItem }) => {
             switch (type) {
-                case useCombobox.stateChangeTypes.InputChange:
-                    setInputValue(inputValue);
-                    break;
                 case useCombobox.stateChangeTypes.InputKeyDownEnter:
                 case useCombobox.stateChangeTypes.ItemClick:
                 case useCombobox.stateChangeTypes.InputBlur:
                     // Check if item hasn't been selected already
                     if (selectedItem && !selectedItems.includes(selectedItem)) {
+                        // Don't select empty answers
+                        if (selectedItem && selectedItem.trim() === '') {
+                            return;
+                        }
+
                         // Add to multiselect
                         addSelectedItem(selectedItem);
 
@@ -92,8 +91,6 @@ export default function OpenEndedResponseMultipleChoice(props) {
                         if (!items.includes(selectedItem)) {
                             setItems(curr => [...curr, selectedItem]);
                         }
-
-                        setInputValue('');
                     }
                     break;
                 default:
@@ -106,11 +103,15 @@ export default function OpenEndedResponseMultipleChoice(props) {
         <Box as="section" mt={10} mb={6} position="relative">
             <div>
                 {/* --- Combobox input --- */}
-                <Flex {...getComboboxProps()}>
+                <Flex {...getComboboxProps()} width="90%">
                     <Input
-                        {...getInputProps(getDropdownProps())}
+                        {...getInputProps(getDropdownProps({
+                                onFocus: () => {
+                                    if (!isOpen) openMenu();
+                                }
+                            }
+                        ))}
                         placeholder="Start typing your answer..."
-                        autoFocus
                     />
                     <IconButton
                         {...getToggleButtonProps()}
@@ -181,7 +182,6 @@ export default function OpenEndedResponseMultipleChoice(props) {
                                         e.stopPropagation();
                                         e.preventDefault();
                                         removeSelectedItem(selectedItem);
-                                        untrackItem(selectedItem);
                                     }}
                                     aria-label="Remove small badge"
                                 />

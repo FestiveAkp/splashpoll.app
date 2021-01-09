@@ -12,6 +12,7 @@ export default function OpenEndedResponseSingleChoice(props) {
 
     const {
         isOpen,
+        openMenu,
         getToggleButtonProps,
         getMenuProps,
         getInputProps,
@@ -65,6 +66,10 @@ export default function OpenEndedResponseSingleChoice(props) {
                 case useCombobox.stateChangeTypes.InputBlur:
                     // Add newly created custom item to dropdown list
                     if (selectedItem && !items.includes(selectedItem)) {
+                        // Don't select empty answers
+                        if (selectedItem && selectedItem.trim() === '') {
+                            return;
+                        }
                         setItems(curr => [...curr, selectedItem]);
                     }
                     break;
@@ -79,9 +84,13 @@ export default function OpenEndedResponseSingleChoice(props) {
             {/* --- Combobox input --- */}
             <Flex {...getComboboxProps()}>
                 <Input
-                    {...getInputProps()}
+                    {...getInputProps({
+                        onFocus: () => {
+                            if (!isOpen) openMenu();
+                        }
+                    })}
+                    width="80%"
                     placeholder="Start typing your answer..."
-                    autoFocus
                 />
                 <IconButton
                     {...getToggleButtonProps()}
@@ -90,6 +99,7 @@ export default function OpenEndedResponseSingleChoice(props) {
                     icon={<Icon as={isOpen ? BsArrowBarUp : BsArrowBarDown} />}
                 />
             </Flex>
+            <Text fontSize="sm" color="grey" mt={2}>Select an answer above or create your own</Text>
             {/* --- Dropdown menu --- */}
             <List
                 {...getMenuProps()}
