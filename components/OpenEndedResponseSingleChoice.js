@@ -21,6 +21,7 @@ export default function OpenEndedResponseSingleChoice(props) {
         selectedItem,
         inputValue
     } = useCombobox({
+        id: 'open-ended-single',
         defaultHighlightedIndex: 0,
         items: inputItems,
 

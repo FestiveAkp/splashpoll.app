@@ -34,6 +34,7 @@ export default function OpenEndedResponseMultipleChoice(props) {
         highlightedIndex,
         getItemProps
     } = useCombobox({
+        id: 'open-ended-multi',
         selectedItem: null,
         inputValue,
         defaultHighlightedIndex: 0,
