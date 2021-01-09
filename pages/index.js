@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import { motion, useCycle } from 'framer-motion';
 import { FaQuestionCircle } from 'react-icons/fa';
 import { Box, Stack, Flex, Input, Checkbox, Button, Switch, Text, Tooltip, Spinner } from '@chakra-ui/react';
+import HomepageAnimateOpen from '../components/HomepageAnimateOpen';
 
 const HelpTooltip = () => (
     <Tooltip
@@ -70,35 +70,6 @@ export default function Home() {
         }
     }
 
-    // Animation state
-    const [isOpen, toggleOpen] = useCycle(true, false);
-
-    const toggleAnimations = () => {
-        setOpenEnded(b => !b);
-        toggleOpen();
-    }
-
-    const variants = {
-        open: {
-            opacity: 1,
-            y: "0%",
-            height: 'auto',
-            marginTop: '2rem',
-            marginBottom: '2.5rem',
-            pointerEvents: 'auto',
-            transition: { type: 'tween' }
-        },
-        closed: {
-            opacity: 0,
-            y: "0%",
-            height: 0,
-            marginTop: '1rem',
-            marginBottom: '1rem',
-            pointerEvents: 'none',
-            transition: { type: 'tween' }
-        }
-    };
-
     return (
         <>
             <Head>
@@ -117,7 +88,7 @@ export default function Home() {
                     <Switch
                         id="open-ended"
                         isChecked={openEnded}
-                        onChange={toggleAnimations}
+                        onChange={() => setOpenEnded(b => !b)}
                         mr={3}
                     />
                     <Text fontWeight="semibold" as="label" htmlFor="open-ended">Open response mode</Text>
@@ -127,17 +98,13 @@ export default function Home() {
                     <Switch
                         id="multiple-choice"
                         isChecked={!openEnded}
-                        onChange={toggleAnimations}
+                        onChange={() => setOpenEnded(b => !b)}
                         mr={3}
                     />
                     <Text fontWeight="semibold" as="label" htmlFor="multiple-choice">Fixed choice mode</Text>
                 </Flex>
             </Box>
-            <motion.section
-                animate={isOpen ? 'open' : 'closed'}
-                initial="open"
-                variants={variants}
-            >
+            <HomepageAnimateOpen isOpen={!openEnded}>
                 <Stack spacing={3}>
                     {answers.map((answer, i) => (
                         <Input
@@ -149,7 +116,7 @@ export default function Home() {
                         />
                     ))}
                 </Stack>
-            </motion.section>
+            </HomepageAnimateOpen>
             <Box as="section">
                 <Stack direction="column">
                     <Checkbox
