@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { FaQuestionCircle } from 'react-icons/fa';
-import { Box, Stack, Flex, Input, Checkbox, Button, Switch, Text, Tooltip, Spinner } from '@chakra-ui/react';
+import { Box, Stack, Flex, Input, Checkbox, Button, Switch, Text, Tooltip, Spinner, useToast } from '@chakra-ui/react';
 import HomepageAnimateOpen from '../components/HomepageAnimateOpen';
 
 const HelpTooltip = () => (
@@ -24,6 +24,7 @@ export default function Home() {
     // Router state
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const toast = useToast();
 
     // Form fields
     const [question, setQuestion] = useState('');
@@ -48,10 +49,23 @@ export default function Home() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newPoll)
             });
+
+            if (!response.ok) {
+                throw new Error(response.status);
+            }
+
             const data = await response.json();
             router.push('/' + data.id);
         } catch (e) {
             console.log(e);
+            toast({
+                title: 'A network error occurred.',
+                description: `Your poll couldn't be created due to a network error. Try refreshing your browser. (${e})`,
+                status: 'error',
+                position: 'top',
+                isClosable: true,
+                duration: null
+            });
         }
     }
 
@@ -73,7 +87,7 @@ export default function Home() {
     return (
         <>
             <Head>
-                <title>Splashpoll - Instantly create online polls with open-ended responses</title>
+                <title>Splashpoll.app - Instantly create online polls with open-ended responses</title>
             </Head>
             <Box as="section">
                 <Input
