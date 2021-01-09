@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { FaQuestionCircle } from 'react-icons/fa';
-import { Box, Stack, Flex, Input, Checkbox, Button, Switch, Text, Tooltip, Spinner, useToast } from '@chakra-ui/react';
+import { Box, Stack, Flex, Input, Checkbox, Button, Switch, Text, Tooltip, Spinner } from '@chakra-ui/react';
 import HomepageAnimateOpen from '../components/HomepageAnimateOpen';
+import createWarningToast from '../components/createWarningToast';
+import createNetworkErrorToast from '../components/createNetworkErrorToast';
 
 const HelpTooltip = () => (
     <Tooltip
@@ -24,7 +26,6 @@ export default function Home() {
     // Router state
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const toast = useToast();
 
     // Form fields
     const [question, setQuestion] = useState('');
@@ -34,11 +35,28 @@ export default function Home() {
 
     // Submit newly created poll to API
     const submit = async () => {
+        // Validate question
+        if (question === '') {
+            createWarningToast('Please enter a question.');
+            return;
+        }
+
+        // Trim whitespace and filter empty answers
+        const filteredAnswers = answers.map(answer => answer.trim())
+                                       .filter(answer => answer !== '');
+
+        // Validate answer fields
+        if (!openEnded && filteredAnswers.length < 2) {
+            createWarningToast('Please provide at least 2 answer choices.');
+            return;
+        }
+
+        // Submit data
         setIsSubmitting(true);
 
         const newPoll = {
             question,
-            answers: !openEnded ? answers.filter(answer => answer !== '') : [],     // Filter out empty answers
+            answers: !openEnded ? filteredAnswers : [],
             openEnded,
             multipleChoices
         };
@@ -57,15 +75,10 @@ export default function Home() {
             const data = await response.json();
             router.push('/' + data.id);
         } catch (e) {
+            // Handle errors, including bad HTTP response codes
             console.log(e);
-            toast({
-                title: 'A network error occurred.',
-                description: `Your poll couldn't be created due to a network error. Try refreshing your browser. (${e})`,
-                status: 'error',
-                position: 'top',
-                isClosable: true,
-                duration: null
-            });
+            createNetworkErrorToast(e);
+            setIsSubmitting(false);
         }
     }
 
