@@ -4,8 +4,8 @@ import Head from 'next/head';
 import { FaQuestionCircle } from 'react-icons/fa';
 import { Box, Stack, Flex, Input, Checkbox, Button, Switch, Text, Tooltip, Spinner } from '@chakra-ui/react';
 import HomepageAnimateOpen from '../components/HomepageAnimateOpen';
-import createWarningToast from '../components/createWarningToast';
-import createNetworkErrorToast from '../components/createNetworkErrorToast';
+import createWarningToast from '../utils/createWarningToast';
+import createNetworkErrorToast from '../utils/createNetworkErrorToast';
 import SplashLayout from '../layouts/SplashLayout';
 
 const HelpTooltip = () => (

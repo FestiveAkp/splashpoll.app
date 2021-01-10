@@ -5,7 +5,7 @@ import { Box, Divider, Button } from '@chakra-ui/react';
 import MultipleChoiceResponseMultipleAnswer from '../../components/MultipleChoiceResponseMultipleAnswer';
 import OpenEndedResponseSingleChoice from '../../components/OpenEndedResponseSingleChoice';
 import OpenEndedResponseMultipleChoice from '../../components/OpenEndedResponseMultipleChoice';
-import createWarningToast from '../../components/createWarningToast';
+import createWarningToast from '../../utils/createWarningToast';
 import MultipleChoiceResponseSingleAnswer from '../../components/MultipleChoiceResponseSingleAnswer';
 import PollHeader from '../../components/PollHeader';
 import SplashLayout from '../../layouts/SplashLayout';
