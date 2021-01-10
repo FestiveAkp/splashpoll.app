@@ -14,7 +14,7 @@ export default function PollHeader(props) {
     return (
         <>
             <Heading size="md">{poll.question}</Heading>
-            <Flex align="center" color="grey" lineHeight="normal" mt="0.35rem">
+            <Flex align="center" color="gray.600" lineHeight="normal" mt="0.35rem">
                 <Flex align="center" title={`Created on ${createdAt}`}>
                     <Icon as={FaCalendarDay} />
                     <Text fontSize="sm" ml="6px">{createdAtDate}</Text>

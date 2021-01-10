@@ -120,7 +120,7 @@ export default function OpenEndedResponseMultipleChoice(props) {
                         icon={<Icon as={isOpen ? BsArrowBarUp : BsArrowBarDown} />}
                     />
                 </Flex>
-                <Text fontSize="sm" color="grey" mt={2}>Press enter to add multiple answers</Text>
+                <Text fontSize="sm" color="gray.600" mt={2}>Press enter to add multiple answers</Text>
 
                 {/* --- Dropdown menu --- */}
                 <List

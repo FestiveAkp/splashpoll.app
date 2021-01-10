@@ -99,7 +99,7 @@ export default function OpenEndedResponseSingleChoice(props) {
                     icon={<Icon as={isOpen ? BsArrowBarUp : BsArrowBarDown} />}
                 />
             </Flex>
-            <Text fontSize="sm" color="grey" mt={2}>Select an answer above or create your own</Text>
+            <Text fontSize="sm" color="gray.600" mt={2}>Select an answer above or create your own</Text>
             {/* --- Dropdown menu --- */}
             <List
                 {...getMenuProps()}

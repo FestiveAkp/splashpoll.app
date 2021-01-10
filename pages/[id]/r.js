@@ -66,7 +66,7 @@ export default function PollResults() {
                     <Box key={i}>
                         <Flex justify="space-between" align="flex-end">
                             <Text width="60%" fontSize="lg">{answer.text}</Text>
-                            <Text fontStyle="italic" fontSize="sm">{answer.votes} votes ({toPercentage(answer.votes)}%)</Text>
+                            <Text fontStyle="italic" fontSize="sm" color="gray.600">{answer.votes} votes ({toPercentage(answer.votes)}%)</Text>
                         </Flex>
                         <Box mt={2}>
                             <Progress value={toPercentage(answer.votes)} size="lg" colorScheme="twitter" />
