@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { Box, Heading, Divider, Text, Button, Skeleton } from '@chakra-ui/react';
+import { Box, Divider, Button } from '@chakra-ui/react';
 import MultipleChoiceResponseMultipleAnswer from '../../components/MultipleChoiceResponseMultipleAnswer';
 import OpenEndedResponseSingleChoice from '../../components/OpenEndedResponseSingleChoice';
 import OpenEndedResponseMultipleChoice from '../../components/OpenEndedResponseMultipleChoice';
 import createWarningToast from '../../components/createWarningToast';
 import MultipleChoiceResponseSingleAnswer from '../../components/MultipleChoiceResponseSingleAnswer';
+import PollHeader from '../../components/PollHeader';
 
 export async function getServerSideProps(context) {
     // Fetch poll from API
@@ -89,8 +90,7 @@ export default function Poll(poll) {
     return (
         <>
             <Box as="section">
-                <Heading size="md">{poll.question}</Heading>
-                <Text fontSize="sm">ID: {id}</Text>
+                <PollHeader poll={poll} />
             </Box>
             {poll.openEnded ? (
                 poll.multipleChoices ? (

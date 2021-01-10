@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Box, Flex, Stack, StackDivider, Heading, Text, Progress, Skeleton } from '@chakra-ui/react';
+import { Box, Flex, Stack, StackDivider, Text, Progress, Skeleton } from '@chakra-ui/react';
+import PollHeader from '../../components/PollHeader';
 
 const NoChoicesResult = () => (
     <Box>
@@ -58,7 +59,7 @@ export default function PollResults() {
     return (
         <>
             <Box as="section">
-                <Heading size="md">{results.question}</Heading>
+                <PollHeader poll={results} />
             </Box>
             <Stack as="section" spacing={6} mt={10} divider={<StackDivider />}>
                 {results.choices.sort((a, b) => b.votes - a.votes).map((answer, i) => (
