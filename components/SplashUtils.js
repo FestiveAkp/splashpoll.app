@@ -19,7 +19,7 @@ export const SplashContainer = props => (
                 pt={4}
                 pb={5}
                 mt={12}
-                mb={16}
+                mb={24}
                 backgroundColor="white"
                 borderWidth="1px"
                 borderColor="gray.200"
@@ -42,7 +42,7 @@ export const SplashContainer = props => (
                 style={{ display: 'block' }}
                 className="react-wavify"
             />
-            <Box height={{ base: '20px', sm: '275px' }} backgroundColor="#1DA1F2" />
+            <Box height={{ base: '40px', sm: '100px', md: '275px' }} backgroundColor="#1DA1F2" />
         </Box>
     </Box>
 );
