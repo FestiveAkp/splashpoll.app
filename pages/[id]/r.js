@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Box, Flex, Stack, StackDivider, Text, Progress, Skeleton } from '@chakra-ui/react';
+import Error from 'next/error';
+import { Box, Flex, Stack, StackDivider, Text, Progress } from '@chakra-ui/react';
 import PollHeader from '../../components/PollHeader';
+import getPoll from '../../utils/getPoll';
+import SplashLayout from '../../layouts/SplashLayout';
+
+export async function getServerSideProps(context) {
+    return getPoll(context);
+}
 
 const NoChoicesResult = () => (
     <Box>
@@ -15,36 +22,19 @@ const NoChoicesResult = () => (
     </Box>
 );
 
-const LoadingSkeleton = () => (
-    <Box>
-        <Skeleton width="50%" height="24px" />
-        <Box mt={10}>
-            <Skeleton width="80px" height="24px" />
-            <Skeleton height="20px" mt={2} />
-        </Box>
-        <Box mt={10}>
-            <Skeleton height="24px" width="80px" />
-            <Skeleton height="20px" mt={2} />
-        </Box>
-    </Box>
-);
-
-export default function PollResults() {
+export default function PollResults(poll) {
     const router = useRouter();
     const { id } = router.query;
-    const [results, setResults] = useState({});
-    const [loading, setLoading] = useState(true);
+    const [results, setResults] = useState(poll);
 
-    // On mount, fetch the poll
     useEffect(() => {
-        setLoading(true);
+        if (poll.error) return;
 
         // Start streaming poll results from server
         let eventSource = new EventSource(`https://splashpoll-api.herokuapp.com/api/polls/${id}/stream`);
         eventSource.addEventListener('message', m => {
             const data = JSON.parse(m.data);
             setResults(data);
-            setLoading(false);
         });
 
         // End stream when user leaves
@@ -54,10 +44,13 @@ export default function PollResults() {
     // Calculates the percentage the given vote accounts for, rounded to two decimal places
     const toPercentage = votes => Math.round((votes / results.totalVotes) * 10000) / 100 || 0;
 
-    if (loading) return <LoadingSkeleton />;
+    // Handle errors
+    if (poll.error) {
+        return <Error statusCode={poll.status} />;
+    }
 
     return (
-        <>
+        <SplashLayout>
             <Box as="section">
                 <PollHeader poll={results} />
             </Box>
@@ -75,6 +68,6 @@ export default function PollResults() {
                 ))}
             </Stack>
             {!results.choices.length && <NoChoicesResult />}
-        </>
+        </SplashLayout>
     );
 }

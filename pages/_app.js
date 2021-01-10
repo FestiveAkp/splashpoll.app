@@ -1,6 +1,5 @@
 import React from 'react';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
-import { SplashHeader, SplashContainer } from '../components/SplashUtils';
 
 export default function MyApp({ Component, pageProps }) {
     const theme = extendTheme({
@@ -14,14 +13,8 @@ export default function MyApp({ Component, pageProps }) {
     });
 
     return (
-        <>
-            <ChakraProvider theme={theme}>
-                <SplashContainer>
-                    <SplashHeader />
-                    <Component {...pageProps} />
-                </SplashContainer>
-            </ChakraProvider>
-            <div style={{ height:'350px' }}>What this website is about</div>
-        </>
+        <ChakraProvider theme={theme}>
+            <Component {...pageProps} />
+        </ChakraProvider>
     );
 }

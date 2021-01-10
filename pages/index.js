@@ -6,6 +6,7 @@ import { Box, Stack, Flex, Input, Checkbox, Button, Switch, Text, Tooltip, Spinn
 import HomepageAnimateOpen from '../components/HomepageAnimateOpen';
 import createWarningToast from '../components/createWarningToast';
 import createNetworkErrorToast from '../components/createNetworkErrorToast';
+import SplashLayout from '../layouts/SplashLayout';
 
 const HelpTooltip = () => (
     <Tooltip
@@ -98,7 +99,7 @@ export default function Home() {
     }
 
     return (
-        <>
+        <SplashLayout>
             <Head>
                 <title>Splashpoll.app - Instantly create online polls with open-ended responses</title>
             </Head>
@@ -159,6 +160,6 @@ export default function Home() {
                 <Button onClick={submit} colorScheme="twitter">Create Poll</Button>
                 {isSubmitting && <Spinner ml={6} />}
             </Flex>
-        </>
+        </SplashLayout>
     );
 }

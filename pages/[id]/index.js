@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import Error from 'next/error';
 import { Box, Divider, Button } from '@chakra-ui/react';
 import MultipleChoiceResponseMultipleAnswer from '../../components/MultipleChoiceResponseMultipleAnswer';
 import OpenEndedResponseSingleChoice from '../../components/OpenEndedResponseSingleChoice';
@@ -7,23 +8,11 @@ import OpenEndedResponseMultipleChoice from '../../components/OpenEndedResponseM
 import createWarningToast from '../../components/createWarningToast';
 import MultipleChoiceResponseSingleAnswer from '../../components/MultipleChoiceResponseSingleAnswer';
 import PollHeader from '../../components/PollHeader';
+import SplashLayout from '../../layouts/SplashLayout';
+import getPoll from '../../utils/getPoll';
 
 export async function getServerSideProps(context) {
-    // Fetch poll from API
-    const id = context.params.id;
-    try {
-        const response = await fetch('https://splashpoll-api.herokuapp.com/api/polls/' + id);
-
-        if (!response.ok) {
-            throw new Error(response.status);
-        }
-
-        const data = await response.json();
-        return { props: data };
-    } catch (e) {
-        console.log(e);
-        return { props: { error: true, status: `${e}` } };
-    }
+    return getPoll(context);
 }
 
 export default function Poll(poll) {
@@ -85,10 +74,13 @@ export default function Poll(poll) {
         }
     }
 
-    if (poll.error) return <code>ERROR {poll.status}</code>;
+    // Handle errors
+    if (poll.error) {
+        return <Error statusCode={poll.status} />;
+    }
 
     return (
-        <>
+        <SplashLayout>
             <Box as="section">
                 <PollHeader poll={poll} />
             </Box>
@@ -133,6 +125,6 @@ export default function Poll(poll) {
                 <Button onClick={submit} colorScheme="twitter">Vote</Button>
                 <Button onClick={goToResults} ml={2}>Results</Button>
             </Box>
-        </>
+        </SplashLayout>
     );
 }
