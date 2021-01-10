@@ -102,11 +102,13 @@ export default function Poll(poll) {
                                 setOpenEndedResponses(changes.selectedItems);
                             }
                         }}
+                        mt={10} mb={6}
                     />
                 ) : (
                     <OpenEndedResponseSingleChoice
                         items={getAnswers()}
                         onSelectedItemChange={changes => {setOpenEndedResponse(changes.selectedItem)}}
+                        mt={10} mb={6}
                     />
                 )
             ) : (
@@ -115,12 +117,14 @@ export default function Poll(poll) {
                         options={getAnswers()}
                         choices={choices}
                         update={setChoices}
+                        mt={10} mb={10}
                     />
                 ) : (
                     <MultipleChoiceResponseSingleAnswer
                         options={getAnswers()}
                         choice={choice}
                         update={setChoice}
+                        mt={10} mb={10}
                     />
                 )
             )}

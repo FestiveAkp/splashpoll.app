@@ -2,10 +2,10 @@ import React from 'react';
 import { Box, Stack, Radio } from '@chakra-ui/react';
 
 export default function MultipleChoiceResponseSingleAnswer(props) {
-    const { options, choice, update } = props;
+    const { options, choice, update, ...chakraProps } = props;
 
     return (
-        <Box as="section" mt={10} mb={8}>
+        <Box as="section" {...chakraProps}>
                 <Stack spacing={3}>
                     {options.map((option, i) => (
                         <Radio

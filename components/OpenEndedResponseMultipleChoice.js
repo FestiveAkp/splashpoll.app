@@ -7,7 +7,7 @@ import { Box, Flex, Icon, IconButton, Input, List, ListItem, Tag, TagCloseButton
 import { BsArrowBarDown, BsArrowBarUp } from 'react-icons/bs';
 
 export default function OpenEndedResponseMultipleChoice(props) {
-    const { selectedItems, onSelectedItemsChange } = props;
+    const { items: _, selectedItems, onSelectedItemsChange, ...chakraProps } = props;
     const [items, setItems] = useState(props.items);        // Gets incoming data + newly created items
     const [inputItems, setInputItems] = useState(items);    // Gets sorted and filtered by input
 
@@ -100,7 +100,7 @@ export default function OpenEndedResponseMultipleChoice(props) {
     });
 
     return (
-        <Box as="section" mt={10} mb={6} position="relative">
+        <Box as="section" position="relative" {...chakraProps}>
             <div>
                 {/* --- Combobox input --- */}
                 <Flex {...getComboboxProps()} width="90%">

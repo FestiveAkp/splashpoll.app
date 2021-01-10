@@ -6,7 +6,7 @@ import { Box, Flex, List, ListItem, Text, Input, Icon, IconButton } from '@chakr
 import Highlighter from 'react-highlight-words';
 
 export default function OpenEndedResponseSingleChoice(props) {
-    const { onSelectedItemChange } = props;
+    const { items: _, onSelectedItemChange, ...chakraProps } = props;
     const [items, setItems] = useState(props.items);        // Gets incoming data + newly created items
     const [inputItems, setInputItems] = useState(items);    // Gets sorted and filtered by input
 
@@ -80,7 +80,7 @@ export default function OpenEndedResponseSingleChoice(props) {
     });
 
     return (
-        <Box as="section" mt={10} mb={6} position="relative">
+        <Box as="section" position="relative" {...chakraProps}>
             {/* --- Combobox input --- */}
             <Flex {...getComboboxProps()}>
                 <Input
