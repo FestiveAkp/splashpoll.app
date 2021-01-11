@@ -14,7 +14,7 @@ export const SplashHeader = () => (
 
 export const SplashContainer = props => (
     <Box position="relative">
-        <Center className="chakra-center" minHeight="100vh" zIndex="5" px={4}>
+        <Center className="chakra-center" minHeight="100vh" zIndex="5" px={2}>
             <Container
                 pt={4}
                 pb={5}
