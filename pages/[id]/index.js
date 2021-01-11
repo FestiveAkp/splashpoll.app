@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import Error from 'next/error';
 import { Box, Divider, Button } from '@chakra-ui/react';
 import MultipleChoiceResponseMultipleAnswer from '../../components/MultipleChoiceResponseMultipleAnswer';
@@ -81,6 +82,9 @@ export default function Poll(poll) {
 
     return (
         <SplashLayout>
+            <Head>
+                <title>{poll.question} - Splashpoll.app</title>
+            </Head>
             <Box as="section">
                 <PollHeader poll={poll} />
             </Box>

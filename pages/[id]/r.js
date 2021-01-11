@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import Error from 'next/error';
 import { Box, Flex, Stack, StackDivider, Text, Progress } from '@chakra-ui/react';
 import PollHeader from '../../components/PollHeader';
@@ -51,6 +52,9 @@ export default function PollResults(poll) {
 
     return (
         <SplashLayout>
+            <Head>
+                <title>{results.question} - Results - Splashpoll.app</title>
+            </Head>
             <Box as="section">
                 <PollHeader poll={results} />
             </Box>

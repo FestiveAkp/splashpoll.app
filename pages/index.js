@@ -101,7 +101,9 @@ export default function Home() {
     return (
         <SplashLayout>
             <Head>
-                <title>Splashpoll.app - Instantly create online polls with open-ended responses</title>
+                <title>Splashpoll.app | Instantly create open-ended online polls</title>
+                <meta name="description" content="The easiest way to create free, real-time online polls. Create multiple choice polls or use our unique open-ended response mode." />
+                <link rel="canonical" href="https://splashpoll.app/" />
             </Head>
             <Box as="section">
                 <Input
