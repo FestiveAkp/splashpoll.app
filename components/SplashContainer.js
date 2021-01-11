@@ -1,18 +1,8 @@
 import React from 'react';
-import Link from 'next/link';
 import Wave from 'react-wavify';
-import { Box, Center, Container, Heading } from '@chakra-ui/react';
+import { Box, Center, Container } from '@chakra-ui/react';
 
-export const SplashHeader = () => (
-    <Box as="header" mb={10}>
-        <Link href="/">
-            <Heading fontStyle="italic" lineHeight="normal" cursor="pointer">Splashpoll.app</Heading>
-        </Link>
-        <Heading as="h2" size="sm" fontWeight="semibold" mt={2}>Instantly create online polls with open-ended responses</Heading>
-    </Box>
-);
-
-export const SplashContainer = props => (
+const SplashContainer = props => (
     <Box position="relative">
         <Center className="chakra-center" minHeight="100vh" zIndex="5" px={2}>
             <Container
@@ -46,3 +36,5 @@ export const SplashContainer = props => (
         </Box>
     </Box>
 );
+
+export default SplashContainer;

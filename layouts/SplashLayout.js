@@ -1,4 +1,5 @@
-import { SplashContainer, SplashHeader } from '../components/SplashUtils';
+import SplashContainer from '../components/SplashContainer';
+import SplashHeader from '../components/SplashHeader';
 
 const SplashLayout = props => (
     <>
