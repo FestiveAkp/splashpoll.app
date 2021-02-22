@@ -2,7 +2,7 @@
 export default async function getPoll(context) {
     // Fetch poll from API
     const id = context.params.id;
-    const response = await fetch('https://splashpoll-api.herokuapp.com/api/polls/' + id);
+    const response = await fetch('http://api.splashpoll.app.test/v1/polls/' + id);
 
     // Handle HTTP errors
     if (!response.ok) {

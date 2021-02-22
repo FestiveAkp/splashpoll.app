@@ -58,13 +58,16 @@ export default function Poll(poll) {
             }
         }
 
-        const data = {
-            choices: poll.multipleChoices? choices : (choice ? [choice] : []),
-            openEndedResponses: poll.multipleChoices ? openEndedResponses : (openEndedResponse ? [openEndedResponse] : [])
-        };
+        const data = {};
+
+        if (poll.openEnded) {
+            data.answers = poll.multipleChoices ? openEndedResponses : (openEndedResponse ? [openEndedResponse] : []);
+        } else {
+            data.answers = poll.multipleChoices ? choices : (choice ? [choice] : []);
+        }
 
         try {
-            await fetch('https://splashpoll-api.herokuapp.com/api/polls/' + id, {
+            await fetch('http://api.splashpoll.app.test/v1/polls/' + id + '/vote', {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)

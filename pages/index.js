@@ -63,7 +63,7 @@ export default function Home() {
         };
 
         try {
-            const response = await fetch('https://splashpoll-api.herokuapp.com/api/polls', {
+            const response = await fetch('https://splashpoll-api.herokuapp.com/v1/polls', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newPoll)

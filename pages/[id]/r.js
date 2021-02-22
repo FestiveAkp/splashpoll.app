@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Error from 'next/error';
+import Pusher from 'pusher-js';
 import { Box, Flex, Stack, StackDivider, Text, Progress } from '@chakra-ui/react';
 import PollHeader from '../../components/PollHeader';
 import getPoll from '../../utils/getPoll';
@@ -32,14 +33,20 @@ export default function PollResults(poll) {
         if (poll.error) return;
 
         // Start streaming poll results from server
-        let eventSource = new EventSource(`https://splashpoll-api.herokuapp.com/api/polls/${id}/stream`);
-        eventSource.addEventListener('message', m => {
-            const data = JSON.parse(m.data);
-            setResults(data);
+        // Enable pusher logging - don't include this in production
+        Pusher.logToConsole = true;
+
+        const pusher = new Pusher('132012a7ff56d99a91a8', {
+            cluster: 'us2'
+        });
+
+        const channel = pusher.subscribe(`polls.${id}`);
+        channel.bind('PollVotesUpdated', function(data) {
+            setResults(data.poll);
         });
 
         // End stream when user leaves
-        return () => eventSource.close();
+        return () => pusher.disconnect();
     }, [id]);
 
     // Calculates the percentage the given vote accounts for, rounded to two decimal places
