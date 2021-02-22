@@ -7,6 +7,7 @@ import HomepageAnimateOpen from '../components/HomepageAnimateOpen';
 import createWarningToast from '../utils/createWarningToast';
 import createNetworkErrorToast from '../utils/createNetworkErrorToast';
 import SplashLayout from '../layouts/SplashLayout';
+import createPollRequest from '../utils/createPollRequest';
 
 const HelpTooltip = () => (
     <Tooltip
@@ -23,6 +24,22 @@ const HelpTooltip = () => (
     </Tooltip>
 );
 
+const validateFields = ({ question, openEnded, answers }) => {
+    // Validate question
+    if (question === '') {
+        createWarningToast('Please enter a question.');
+        return false;
+    }
+
+    // Validate answer fields
+    if (!openEnded && answers.length < 2) {
+        createWarningToast('Please provide at least 2 answer choices.');
+        return false;
+    }
+
+    return true;
+}
+
 export default function Home() {
     // Router state
     const router = useRouter();
@@ -36,24 +53,8 @@ export default function Home() {
 
     // Submit newly created poll to API
     const submit = async () => {
-        // Validate question
-        if (question === '') {
-            createWarningToast('Please enter a question.');
-            return;
-        }
-
         // Trim whitespace and filter empty answers
-        const filteredAnswers = answers.map(answer => answer.trim())
-                                       .filter(answer => answer !== '');
-
-        // Validate answer fields
-        if (!openEnded && filteredAnswers.length < 2) {
-            createWarningToast('Please provide at least 2 answer choices.');
-            return;
-        }
-
-        // Submit data
-        setIsSubmitting(true);
+        const filteredAnswers = answers.map(answer => answer.trim()).filter(answer => answer !== '');
 
         const newPoll = {
             question,
@@ -62,21 +63,18 @@ export default function Home() {
             multipleChoices
         };
 
+        // Validate form fields
+        if (!validateFields(newPoll)) {
+            return;
+        }
+
         try {
-            const response = await fetch('https://splashpoll-api.herokuapp.com/v1/polls', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newPoll)
-            });
-
-            if (!response.ok) {
-                throw new Error(response.status);
-            }
-
-            const data = await response.json();
+            // Submit data
+            setIsSubmitting(true);
+            const data = await createPollRequest(newPoll);
             router.push('/' + data.id);
         } catch (e) {
-            // Handle errors, including bad HTTP response codes
+            // Handle errors
             console.log(e);
             createNetworkErrorToast(e);
             setIsSubmitting(false);
