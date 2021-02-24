@@ -10,7 +10,7 @@ import createWarningToast from '../../utils/createWarningToast';
 import MultipleChoiceResponseSingleAnswer from '../../components/MultipleChoiceResponseSingleAnswer';
 import PollHeader from '../../components/PollHeader';
 import SplashLayout from '../../layouts/SplashLayout';
-import getPoll from '../../utils/getPoll';
+import getPoll from '../../api/getPoll';
 
 export async function getServerSideProps(context) {
     return getPoll(context);
@@ -67,7 +67,7 @@ export default function Poll(poll) {
         }
 
         try {
-            await fetch('http://api.splashpoll.app.test/v1/polls/' + id + '/vote', {
+            await fetch('https://splashpoll-api.herokuapp.com/v1/polls/' + id + '/vote', {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)

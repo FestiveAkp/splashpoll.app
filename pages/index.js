@@ -7,7 +7,7 @@ import HomepageAnimateOpen from '../components/HomepageAnimateOpen';
 import createWarningToast from '../utils/createWarningToast';
 import createNetworkErrorToast from '../utils/createNetworkErrorToast';
 import SplashLayout from '../layouts/SplashLayout';
-import createPollRequest from '../utils/createPollRequest';
+import createPollRequest from '../api/createPoll';
 
 const HelpTooltip = () => (
     <Tooltip
