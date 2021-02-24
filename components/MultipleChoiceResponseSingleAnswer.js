@@ -7,16 +7,16 @@ export default function MultipleChoiceResponseSingleAnswer(props) {
     return (
         <Box as="section" {...chakraProps}>
                 <Stack spacing={3}>
-                    {options.map((option, i) => (
+                    {options.map(option => (
                         <Radio
-                            key={i}
-                            value={option}
-                            isChecked={choice === option}
+                            key={option.id}
+                            value={option.id}
+                            isChecked={choice == option.id}
                             onChange={e => update(e.target.value)}
                             spacing="1rem"
                             size="lg"
                         >
-                            {option}
+                            {option.text}
                         </Radio>
                     ))}
                 </Stack>

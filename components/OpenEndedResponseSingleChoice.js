@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useCombobox } from 'downshift';
 import { matchSorter } from 'match-sorter';
 import { BsArrowBarDown, BsArrowBarUp } from 'react-icons/bs';
-import { Box, Flex, List, ListItem, Text, Input, Icon, IconButton } from '@chakra-ui/react';
+import { Box, Flex, List, ListItem, Text, Input, Icon, IconButton, Kbd } from '@chakra-ui/react';
 import Highlighter from 'react-highlight-words';
 
 export default function OpenEndedResponseSingleChoice(props) {
@@ -130,7 +130,7 @@ export default function OpenEndedResponseSingleChoice(props) {
                             >
                                 {item && item === inputValue && !items.includes(inputValue) ? (
                                     <Flex>
-                                        <Text>Create&nbsp;</Text>
+                                        <Text><Kbd>tap</Kbd> or <Kbd>enter</Kbd> to create&nbsp;</Text>
                                         <Text as="mark" fontWeight="bold">{item}</Text>
                                     </Flex>
                                 ) : (

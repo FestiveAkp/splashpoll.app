@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { matchSorter } from 'match-sorter';
 import { useCombobox, useMultipleSelection } from 'downshift';
 import Highlighter from 'react-highlight-words';
-import { Box, Flex, Icon, IconButton, Input, List, ListItem, Tag, TagCloseButton, TagLabel, Text, Wrap, WrapItem } from '@chakra-ui/react';
+import { Box, Flex, Icon, IconButton, Input, Kbd, List, ListItem, Tag, TagCloseButton, TagLabel, Text, Wrap, WrapItem } from '@chakra-ui/react';
 import { BsArrowBarDown, BsArrowBarUp } from 'react-icons/bs';
 
 export default function OpenEndedResponseMultipleChoice(props) {
@@ -152,7 +152,7 @@ export default function OpenEndedResponseMultipleChoice(props) {
                                 >
                                     {item && item === inputValue && !items.includes(inputValue) ? (
                                         <Flex>
-                                            <Text>Create&nbsp;</Text>
+                                            <Text><Kbd>tap</Kbd> or <Kbd>enter</Kbd> to create&nbsp;</Text>
                                             <Text as="mark" fontWeight="bold">{item}</Text>
                                         </Flex>
                                     ) : (
