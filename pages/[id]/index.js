@@ -3,12 +3,14 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Error from 'next/error';
 import { Box, Divider, Button } from '@chakra-ui/react';
-import MultipleChoiceResponseMultipleAnswer from '../../components/MultipleChoiceResponseMultipleAnswer';
-import OpenEndedResponseSingleChoice from '../../components/OpenEndedResponseSingleChoice';
-import OpenEndedResponseMultipleChoice from '../../components/OpenEndedResponseMultipleChoice';
-import createWarningToast from '../../utils/createWarningToast';
-import MultipleChoiceResponseSingleAnswer from '../../components/MultipleChoiceResponseSingleAnswer';
-import PollHeader from '../../components/PollHeader';
+import {
+    MultipleChoiceResponseSingleAnswer,
+    MultipleChoiceResponseMultipleAnswer,
+    OpenEndedResponseSingleChoice,
+    OpenEndedResponseMultipleChoice,
+    PollHeader
+} from '../../components';
+import { createWarningToast } from '../../utils';
 import SplashLayout from '../../layouts/SplashLayout';
 import getPoll from '../../api/getPoll';
 

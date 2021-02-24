@@ -4,9 +4,9 @@ import Head from 'next/head';
 import Error from 'next/error';
 import Pusher from 'pusher-js';
 import { Box, Flex, Stack, StackDivider, Text, Progress } from '@chakra-ui/react';
-import PollHeader from '../../components/PollHeader';
-import getPoll from '../../api/getPoll';
+import { PollHeader } from '../../components';
 import SplashLayout from '../../layouts/SplashLayout';
+import getPoll from '../../api/getPoll';
 
 export async function getServerSideProps(context) {
     return getPoll(context);
