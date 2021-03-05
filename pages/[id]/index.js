@@ -63,7 +63,7 @@ export default function Poll(poll) {
             {poll.openEnded ? (
                 poll.multipleChoices ? (
                     <OpenEndedResponseMultipleChoice
-                        items={poll.choices}
+                        items={poll.choices.map(choice => choice.text)}
                         selectedItems={choices}
                         onSelectedItemsChange={changes => {
                             if (changes.selectedItems) {
@@ -74,7 +74,7 @@ export default function Poll(poll) {
                     />
                 ) : (
                     <OpenEndedResponseSingleChoice
-                        items={poll.choices}
+                        items={poll.choices.map(choice => choice.text)}
                         onSelectedItemChange={changes => {setChoice(changes.selectedItem)}}
                         mt={10} mb={6}
                     />
