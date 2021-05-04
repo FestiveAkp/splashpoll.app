@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCombobox } from 'downshift';
 import { matchSorter } from 'match-sorter';
 import { BsArrowBarDown, BsArrowBarUp } from 'react-icons/bs';
@@ -78,6 +78,11 @@ export default function OpenEndedResponseSingleChoice(props) {
             }
         },
     });
+
+    // Update local items when props change (Pusher live updates)
+    useEffect(() => {
+        setItems([...new Set([...items, ...props.items])]);     // Array union
+    }, [props.items.length]);
 
     return (
         <Box as="section" position="relative" {...chakraProps}>

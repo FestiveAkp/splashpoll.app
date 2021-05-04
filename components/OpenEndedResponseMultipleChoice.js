@@ -1,5 +1,5 @@
 // https://codesandbox.io/s/funny-shirley-127y7?file=/src/downshift/ordered-examples/05-multi-create.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { matchSorter } from 'match-sorter';
 import { useCombobox, useMultipleSelection } from 'downshift';
 import Highlighter from 'react-highlight-words';
@@ -99,6 +99,11 @@ export default function OpenEndedResponseMultipleChoice(props) {
         },
     });
 
+    // Update local items when props change (Pusher live updates)
+    useEffect(() => {
+        setItems([...new Set([...items, ...props.items])]);     // Array union
+    }, [props.items.length]);
+
     return (
         <Box as="section" position="relative" {...chakraProps}>
             <div>
@@ -191,5 +196,5 @@ export default function OpenEndedResponseMultipleChoice(props) {
                 </Wrap>
             </div>
         </Box>
-    )
+    );
 }

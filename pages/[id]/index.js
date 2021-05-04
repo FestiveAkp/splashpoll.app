@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Error from 'next/error';
+import Pusher from 'pusher-js';
 import { Box, Divider, Button, Spinner, Flex } from '@chakra-ui/react';
 import {
     MultipleChoiceResponseSingleAnswer,
@@ -23,9 +24,32 @@ export default function Poll(poll) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [choice, setChoice] = useState(null);
     const [choices, setChoices] = useState([]);
+    const [liveChoices, setLiveChoices] = useState(poll.choices);
 
     const validateFields = () => poll.multipleChoices ? choices.length < 1 : !choice || choice.trim() === '';
     const goToResults = () => router.push(`/${id}/r`);
+
+    // Stream answers if poll is open-ended, so that user can pick as they come in
+    useEffect(() => {
+        if (poll.error) return;
+        if (!poll.openEnded) return;
+
+        // Start streaming poll results from server
+        // Enable pusher logging - don't include this in production
+        Pusher.logToConsole = true;
+
+        const pusher = new Pusher('132012a7ff56d99a91a8', {
+            cluster: 'us2'
+        });
+
+        const channel = pusher.subscribe(`polls.${id}`);
+        channel.bind('PollVotesUpdated', function(data) {
+            setLiveChoices(data.poll.choices);
+        });
+
+        // End stream when user leaves
+        return () => pusher.disconnect();
+    }, [id]);
 
     // Submit poll response to API
     const submit = async () => {
@@ -63,7 +87,7 @@ export default function Poll(poll) {
             {poll.openEnded ? (
                 poll.multipleChoices ? (
                     <OpenEndedResponseMultipleChoice
-                        items={poll.choices.map(choice => choice.text)}
+                        items={liveChoices.map(choice => choice.text)}
                         selectedItems={choices}
                         onSelectedItemsChange={changes => {
                             if (changes.selectedItems) {
@@ -74,7 +98,7 @@ export default function Poll(poll) {
                     />
                 ) : (
                     <OpenEndedResponseSingleChoice
-                        items={poll.choices.map(choice => choice.text)}
+                        items={liveChoices.map(choice => choice.text)}
                         onSelectedItemChange={changes => {setChoice(changes.selectedItem)}}
                         mt={10} mb={6}
                     />
