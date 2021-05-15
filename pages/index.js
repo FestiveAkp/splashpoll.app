@@ -71,7 +71,13 @@ export default function Home() {
             // Submit data
             setIsSubmitting(true);
             const data = await createPollRequest(newPoll);
-            router.push('/' + data.id);
+
+            // Navigate to next page
+            if (openEnded) {
+                router.push('/' + data.id + '/edit');
+            } else {
+                router.push('/' + data.id);
+            }
         } catch (e) {
             // Handle errors
             console.log(e);
