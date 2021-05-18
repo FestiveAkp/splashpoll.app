@@ -5,5 +5,3 @@ export { default as OpenEndedResponseMultipleChoice } from './OpenEndedResponseM
 export { default as OpenEndedResponseSingleChoice } from './OpenEndedResponseSingleChoice';
 export { default as PollCreated } from './PollCreated';
 export { default as PollHeader } from './PollHeader';
-export { default as SplashContainer } from './SplashContainer';
-export { default as SplashHeader } from './SplashHeader';
