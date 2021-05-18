@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Error from 'next/error';
-import Pusher from 'pusher-js';
 import { Box, Divider, Button, Spinner, Flex } from '@chakra-ui/react';
 import {
     MultipleChoiceResponseSingleAnswer,
@@ -12,10 +11,10 @@ import {
     PollHeader
 } from '../../components';
 import SplashLayout from '../../layouts/SplashLayout';
-import getPoll from '../../api/getPoll';
+import { getPollRequest, voteRequest, createWarningToast, getVotesListener } from '../../utils';
 
 export async function getServerSideProps(context) {
-    return getPoll(context);
+    return getPollRequest(context);
 }
 
 export default function Poll(poll) {
@@ -34,18 +33,8 @@ export default function Poll(poll) {
         if (poll.error) return;
         if (!poll.openEnded) return;
 
-        // Start streaming poll results from server
-        // Enable pusher logging - don't include this in production
-        Pusher.logToConsole = true;
-
-        const pusher = new Pusher('132012a7ff56d99a91a8', {
-            cluster: 'us2'
-        });
-
-        const channel = pusher.subscribe(`polls.${id}`);
-        channel.bind('PollVotesUpdated', function(data) {
-            setLiveChoices(data.poll.choices);
-        });
+        // Start listening to votes
+        const pusher = getVotesListener(id, data => setLiveChoices(data.poll.choices));
 
         // End stream when user leaves
         return () => pusher.disconnect();
@@ -59,15 +48,12 @@ export default function Poll(poll) {
 
         try {
             setIsSubmitting(true);
-            await fetch('https://splashpoll-api.herokuapp.com/v1/polls/' + id + '/vote', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
+            await voteRequest(id, data);
             goToResults();
         } catch (e) {
-            setIsSubmitting(false);
             console.log(e);
+            setIsSubmitting(false);
+            createWarningToast('An error occurred, try refreshing your browser. ' + e);
         }
     }
 

@@ -3,13 +3,13 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
 import { Alert, AlertDescription, AlertTitle, Box, Button, Checkbox, CheckboxGroup, Divider, Flex, Input, Spinner, Stack, StackDivider, Text } from '@chakra-ui/react';
-import { FaTrash, FaSyncAlt } from 'react-icons/fa';
-import getPoll from '../../api/getPoll';
+import { FaTrash, FaSyncAlt, FaCompressAlt } from 'react-icons/fa';
 import SplashLayout from '../../layouts/SplashLayout';
 import { PollHeader } from '../../components';
+import { getPollRequest } from '../../utils';
 
 export async function getServerSideProps(context) {
-    return getPoll(context);
+    return getPollRequest(context);
 }
 
 export default function Admin(poll) {
@@ -54,6 +54,7 @@ export default function Admin(poll) {
                     isReadOnly={true}
                     variant="filled"
                     value={`https://splashpoll.app/${_poll.id}`}
+                    onClick={e => e.target.select()}
                 />
                 <Stack direction="row" mt={3}>
                     <Button as="a" href={`/${_poll.id}`} size="sm" colorScheme="twitter">Voting page</Button>
@@ -70,10 +71,12 @@ export default function Admin(poll) {
                         {isRefreshing && <Spinner size="sm" />}
                     </Stack>
                     <Stack direction="row">
-                        <Button size="sm" variant="outline" onClick={refreshVotes}>
-                            <FaSyncAlt />
+                        <Button size="sm" variant="outline" onClick={refreshVotes} rightIcon={<FaSyncAlt />}>
+                            Refresh
                         </Button>
-                        <Button size="sm" colorScheme="yellow" isDisabled={selectedVotes.length < 2}>Combine</Button>
+                        <Button size="sm" colorScheme="yellow" isDisabled={selectedVotes.length < 2} rightIcon={<FaCompressAlt />}>
+                            Combine
+                        </Button>
                     </Stack>
                 </Flex>
                 <CheckboxGroup value={selectedVotes} onChange={setSelectedVotes}>

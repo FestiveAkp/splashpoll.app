@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Error from 'next/error';
-import Pusher from 'pusher-js';
 import { Box, Flex, Stack, StackDivider, Text, Progress } from '@chakra-ui/react';
 import { PollHeader } from '../../components';
 import SplashLayout from '../../layouts/SplashLayout';
-import getPoll from '../../api/getPoll';
+import { getPollRequest, getVotesListener } from '../../utils';
 
 export async function getServerSideProps(context) {
-    return getPoll(context);
+    return getPollRequest(context);
 }
 
 const NoChoicesResult = () => (
@@ -32,18 +31,8 @@ export default function PollResults(poll) {
     useEffect(() => {
         if (poll.error) return;
 
-        // Start streaming poll results from server
-        // Enable pusher logging - don't include this in production
-        Pusher.logToConsole = true;
-
-        const pusher = new Pusher('132012a7ff56d99a91a8', {
-            cluster: 'us2'
-        });
-
-        const channel = pusher.subscribe(`polls.${id}`);
-        channel.bind('PollVotesUpdated', function(data) {
-            setResults(data.poll);
-        });
+        // Start listening to votes
+        const pusher = getVotesListener(id, data => setResults(data.poll));
 
         // End stream when user leaves
         return () => pusher.disconnect();
