@@ -1,3 +1,7 @@
+# Splashpoll.app
+
+<img width="1630" alt="splashpoll" src="https://user-images.githubusercontent.com/20550003/179100825-4576ff30-1f68-498f-b970-f214a75fddd6.png">
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
